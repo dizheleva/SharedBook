@@ -11,7 +11,7 @@
 
         [Required]
         [MaxLength(PlaceMaxLength)]
-        public string Place { get; set; }
+        public string City { get; set; }
 
         public virtual ICollection<Book> Books { get; init; } = new List<Book>();
 

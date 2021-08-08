@@ -1,7 +1,6 @@
 ﻿namespace SharedBook.Data.Models
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     public class Reservation
@@ -22,6 +21,8 @@
         [Required]
         public DateTime ReservationDate { get; set; }
 
-        public ICollection<User> Users { get; set; } = new List<User>();
+        public DateTime? DeletedAt { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

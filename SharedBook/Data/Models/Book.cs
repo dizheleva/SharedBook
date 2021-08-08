@@ -44,14 +44,16 @@
         [Required]
         public int OwnerId { get; set; }
 
-        public User User { get; set; }
+        public User Owner { get; set; }
 
         public DateTime? DeletedAt { get; set; }
 
         public bool IsDeleted { get; set; }
 
-        public ICollection<Reservation> Reservations { get; set; }
+        public ICollection<BookSharing> Shares { get; init; } = new List<BookSharing>();
 
-        public ICollection<Request> Requests { get; set; }
+        public ICollection<Reservation> Reservations { get; init; } = new List<Reservation>();
+
+        public ICollection<Request> Requests { get; init; } = new List<Request>();
     }
 }
