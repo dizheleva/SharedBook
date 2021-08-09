@@ -2,27 +2,31 @@
 {
     using System;
     using System.ComponentModel.DataAnnotations;
+    using Enums;
 
     public class Reservation
     {
-        [Key]
-        public int Id { get; set; }
+        [Key] 
+        public int Id { get; init; } 
 
         [Required]
-        public int BookId { get; set; }
+        public string BookId { get; set; }
 
         public Book Book { get; set; }
 
         [Required]
-        public int UserId { get; set; }
+        public string SenderId { get; set; }
 
-        public User User { get; set; }
+        public User Sender { get; set; }
+
+        [Required]
+        public string ReceiverId { get; set; }
+
+        public User Receiver { get; set; }
 
         [Required]
         public DateTime ReservationDate { get; set; }
 
-        public DateTime? DeletedAt { get; set; }
-
-        public bool IsDeleted { get; set; }
+        public ReservationStatus ReservationStatus { get; set; }
     }
 }

@@ -1,13 +1,15 @@
 ﻿namespace SharedBook.Data.Models
 {
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using Enums;
     using static DataConstants;
 
     public class User
     {
-        [Key]
-        public int Id { get; init; }
+        [Key] 
+        public string Id { get; init; } = Guid.NewGuid().ToString();
 
         [Required]
         [MaxLength(FirstNameMaxLength)]
@@ -18,20 +20,29 @@
         public string LastName { get; set; }
 
         [Required]
-        public int LocationId { get; set; }
+        public int AddressId { get; set; }
 
-        public Location Location { get; set; }
+        public Address Address { get; set; }
 
-        public string ProfilePicture { get; set; }
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
 
-        public ICollection<Book> OwnedBooks { get; init; } = new List<Book>();
+        [Required]
+        [RegularExpression(@"/08[789]\d{7}/")]
+        public string Phone { get; set; }
 
-        public ICollection<BookSharing> BorrowedBooks { get; init; } = new List<BookSharing>();
+        [Required]
+        public UserStatus UserStatus { get; set; }
 
-        public ICollection<Reservation> Reservations { get; init; } = new List<Reservation>();
+        //public string ProfilePicture { get; set; }
 
-        public ICollection<Request> SentRequests { get; init; } = new List<Request>();
+        public ICollection<Book> OwnedBooks { get; set; } = new List<Book>();
 
-        public ICollection<Request> ReceivedRequests { get; init; } = new List<Request>();
+        public ICollection<BookSharing> BorrowedBooks { get; set; } = new List<BookSharing>();
+
+        public ICollection<Reservation> SentReservationRequests { get; set; } = new List<Reservation>();
+
+        public ICollection<Reservation> ReceivedReservationRequests { get; set; } = new List<Reservation>();
     }
 }

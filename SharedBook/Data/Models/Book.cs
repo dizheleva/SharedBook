@@ -1,15 +1,15 @@
 ﻿namespace SharedBook.Data.Models
 {
-    using Enums;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using Enums;
     using static DataConstants;
 
     public class Book
     {
-        [Key]
-        public int Id { get; init; }
+        [Key] 
+        public string Id { get; init; } = Guid.NewGuid().ToString();
 
         [Required]
         [MaxLength(TitleMaxLength)]
@@ -20,29 +20,21 @@
         public string Author { get; set; }
 
         [Required]
-        public int GenreId { get; set; }
-
         public Genre Genre { get; set; }
 
         [MaxLength(DescriptionMaxLength)]
         public string Description { get; set; }
 
-        [Required]
-        public string Image { get; set; }
-
-        [Required]
-        public int StatusId { get; set; }
+        public string ImageUrl { get; set; }
 
         [Required]
         public BookStatus Status { get; set; }
 
         [Required]
-        public int LocationId { get; set; }
-
-        public Location Location { get; set; }
+        public string Location { get; set; }
 
         [Required]
-        public int OwnerId { get; set; }
+        public string OwnerId { get; set; }
 
         public User Owner { get; set; }
 
@@ -53,7 +45,5 @@
         public ICollection<BookSharing> Shares { get; init; } = new List<BookSharing>();
 
         public ICollection<Reservation> Reservations { get; init; } = new List<Reservation>();
-
-        public ICollection<Request> Requests { get; init; } = new List<Request>();
     }
 }

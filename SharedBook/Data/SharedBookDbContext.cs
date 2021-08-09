@@ -17,10 +17,8 @@
 
         public DbSet<Book> Books { get; init; }
 
-        public DbSet<Location> Locations { get; init; }
-
-        public DbSet<Request> Requests { get; init; }
-
+        public DbSet<Address> Locations { get; init; }
+        
         public DbSet<Reservation> Reservations { get; init; }
 
         public DbSet<BookSharing> SharedBooks { get; init; }
@@ -35,23 +33,23 @@
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder
-                .Entity<Request>()
+                .Entity<Reservation>()
                 .HasOne(s => s.Book)
-                .WithMany(r => r.Requests)
+                .WithMany(r => r.Reservations)
                 .HasForeignKey(s => s.BookId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder
-                .Entity<Request>()
+                .Entity<Reservation>()
                 .HasOne(s => s.Sender)
-                .WithMany(r => r.SentRequests)
+                .WithMany(r => r.SentReservationRequests)
                 .HasForeignKey(s => s.SenderId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder
-                .Entity<Request>()
+                .Entity<Reservation>()
                 .HasOne(s => s.Receiver)
-                .WithMany(r => r.ReceivedRequests)
+                .WithMany(r => r.ReceivedReservationRequests)
                 .HasForeignKey(s => s.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
 

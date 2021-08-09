@@ -1,5 +1,7 @@
 ﻿namespace SharedBook.Data.Models.Enums
 {
+    using System.ComponentModel.DataAnnotations;
+
     public enum Genre
     {
         History = 1,
@@ -9,6 +11,7 @@
         Mystery = 5,
         Fantasy = 6,
         Horror = 7,
+        [Display(Name = "Science Fiction")]
         ScienceFiction = 89,
         Romance = 9,
         Education = 10,
@@ -24,7 +27,9 @@
         Cooking = 20,
         Art = 21,
         Motivational = 22,
+        [Display(Name = "Health and Fitness")]
         HealthFitness = 23,
+        [Display(Name = "Craft, Hobbies and Home")]
         CraftHobbiesHome = 24,
         Politics = 25
     }

@@ -19,7 +19,7 @@
 
             data.Database.Migrate();
 
-            SeedLocations(data);
+            //SeedLocations(data);
 
             return app;
         }
@@ -33,7 +33,7 @@
             
             var citiesJson = File.ReadAllText("Infrastructure/bgCities.json");
 
-            var jsonLocations = JsonConvert.DeserializeObject<Location[]>(citiesJson);
+            var jsonLocations = JsonConvert.DeserializeObject<Address[]>(citiesJson);
 
             foreach (var location in jsonLocations)
             {
