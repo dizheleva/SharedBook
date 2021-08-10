@@ -13,7 +13,7 @@ namespace SharedBook
     public class Startup
     {
         public Startup(IConfiguration configuration) 
-            => Configuration = configuration;
+            => this.Configuration = configuration;
 
         public IConfiguration Configuration { get; }
 
@@ -21,7 +21,7 @@ namespace SharedBook
         {
             services
                 .AddDbContext<SharedBookDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 

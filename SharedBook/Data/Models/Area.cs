@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using Enums;
     using static DataConstants;
 
     public class Area
@@ -12,9 +11,7 @@
 
         [Required]
         [MaxLength(AreaMaxLength)]
-        public AreaName AreaName { get; set; }
-
-        public int AdminCode { get; set; }
+        public string AdminName { get; set; }
 
         public ICollection<City> Cities { get; set; } = new List<City>();
     }

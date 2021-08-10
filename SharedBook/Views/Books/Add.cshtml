@@ -1,32 +1,42 @@
 ﻿@using SharedBook.Data.Models.Enums
 @model AddBookFormModel
-@ViewData["Title"] = "Add Book";
+@{
+    ViewData["Title"] = "Add Book";
+}
 
 <div class="row">
     <div class="offset-lg-2 col-lg-8 offset-xl-3 col-xl-6 col-sm-12">
         <h2 class="heading-margin">Add Book</h2>
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label asp-for="Title">Book Title</label>
                 <input asp-for="Title" class="form-control">
+                <span asp-validation-for="Title" class="small text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Author">Book Author</label>
                 <input asp-for="Author" class="form-control">
+                <span asp-validation-for="Author" class="small text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Genre">Select genre</label>
                 <select asp-for="Genre" class="form-control" asp-items="Html.GetEnumSelectList<Genre>()">
                     <option selected="selected" value="">Please select</option>
                 </select>
+                <span asp-validation-for="Genre" class="small text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ImageUrl">Book cover image URL</label>
                 <input asp-for="ImageUrl" class="form-control" placeholder="https://...">
+                <span asp-validation-for="ImageUrl" class="small text-danger"></span>
+            </div>
+            <div>
+                <input type="file" name="Image"/>
             </div>
             <div class="form-group">
                 <label asp-for="Description">Description</label>
                 <textarea asp-for="Description" class="form-control" placeholder="Book condition, missing or unreadable pages, language, number of pages..." rows="3"></textarea>
+                <span asp-validation-for="Description" class="small text-danger"></span>
             </div>
             <input class="btn btn-primary float-right" type="submit" value="Save" />
         </form>

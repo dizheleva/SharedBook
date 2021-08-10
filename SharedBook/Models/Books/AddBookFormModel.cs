@@ -1,31 +1,30 @@
 ﻿namespace SharedBook.Models.Books
 {
     using System.ComponentModel.DataAnnotations;
+    using Microsoft.AspNetCore.Mvc.ModelBinding;
     using SharedBook.Data.Models.Enums;
     using static Data.DataConstants;
 
     public class AddBookFormModel
     {
         [Required]
-        [MinLength(TitleMinLength)]
-        [MaxLength(TitleMaxLength)]
+        [StringLength(TitleMaxLength, MinimumLength = TitleMinLength)]
         public string Title { get; init; }
 
         [Required]
-        [MinLength(AuthorMinLength)]
-        [MaxLength(AuthorMaxLength)]
+        [StringLength(AuthorMaxLength, MinimumLength = AuthorMinLength)]
         public string Author { get; init; }
 
         [Required]
+        [BindRequired]
         public Genre Genre { get; init; }
 
-        [Required]
-        [MinLength(DescriptionMinLength)]
-        [MaxLength(DescriptionMaxLength)]
+        [StringLength(DescriptionMaxLength)]
         public string Description { get; init; }
 
-        [MinLength(DescriptionMinLength)]
-        [MaxLength(DescriptionMaxLength)]
+        [Display(Name = "Image URL")]
+        [Required]
+        [Url]
         public string ImageUrl { get; init; }
     }
 }
