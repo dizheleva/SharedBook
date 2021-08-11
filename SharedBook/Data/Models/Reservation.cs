@@ -10,7 +10,7 @@
         public int Id { get; init; } 
 
         [Required]
-        public string BookId { get; set; }
+        public int BookId { get; set; }
 
         public Book Book { get; set; }
 

@@ -3,17 +3,15 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SharedBook.Data;
 
-namespace SharedBook.Data.Migrations
+namespace SharedBook.Migrations
 {
     [DbContext(typeof(SharedBookDbContext))]
-    [Migration("20210808001009_UpdateDb")]
-    partial class UpdateDb
+    partial class SharedBookDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -221,6 +219,53 @@ namespace SharedBook.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("SharedBook.Data.Models.Address", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AreaId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PostCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StreetAddress")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AreaId");
+
+                    b.HasIndex("CityId");
+
+                    b.ToTable("Locations");
+                });
+
+            modelBuilder.Entity("SharedBook.Data.Models.Area", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AdminName")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Area");
+                });
+
             modelBuilder.Entity("SharedBook.Data.Models.Book", b =>
                 {
                     b.Property<int>("Id")
@@ -243,26 +288,21 @@ namespace SharedBook.Data.Migrations
                     b.Property<int>("Genre")
                         .HasColumnType("int");
 
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Image")
-                        .IsRequired()
+                    b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("LocationId")
-                        .HasColumnType("int");
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("int");
+                    b.Property<string>("OwnerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StatusId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -271,8 +311,6 @@ namespace SharedBook.Data.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LocationId");
 
                     b.HasIndex("OwnerId");
 
@@ -299,8 +337,9 @@ namespace SharedBook.Data.Migrations
                         .IsRequired()
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -311,60 +350,26 @@ namespace SharedBook.Data.Migrations
                     b.ToTable("SharedBooks");
                 });
 
-            modelBuilder.Entity("SharedBook.Data.Models.Location", b =>
+            modelBuilder.Entity("SharedBook.Data.Models.City", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("City")
+                    b.Property<int>("AreaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Locations");
-                });
+                    b.HasIndex("AreaId");
 
-            modelBuilder.Entity("SharedBook.Data.Models.Request", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("ReceiverId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SenderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("ReceiverId");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("Requests");
+                    b.ToTable("City");
                 });
 
             modelBuilder.Entity("SharedBook.Data.Models.Reservation", b =>
@@ -377,53 +382,63 @@ namespace SharedBook.Data.Migrations
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                    b.Property<string>("ReceiverId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("ReservationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("ReservationStatus")
                         .HasColumnType("int");
+
+                    b.Property<string>("SenderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ReceiverId");
+
+                    b.HasIndex("SenderId");
 
                     b.ToTable("Reservations");
                 });
 
             modelBuilder.Entity("SharedBook.Data.Models.User", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AddressId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
-                    b.Property<int>("LocationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ProfilePicture")
+                    b.Property<string>("Phone")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserStatus")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LocationId");
+                    b.HasIndex("AddressId");
 
                     b.ToTable("Users");
                 });
@@ -479,21 +494,31 @@ namespace SharedBook.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SharedBook.Data.Models.Book", b =>
+            modelBuilder.Entity("SharedBook.Data.Models.Address", b =>
                 {
-                    b.HasOne("SharedBook.Data.Models.Location", "Location")
-                        .WithMany("Books")
-                        .HasForeignKey("LocationId")
+                    b.HasOne("SharedBook.Data.Models.Area", "Area")
+                        .WithMany()
+                        .HasForeignKey("AreaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("SharedBook.Data.Models.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Area");
+
+                    b.Navigation("City");
+                });
+
+            modelBuilder.Entity("SharedBook.Data.Models.Book", b =>
+                {
                     b.HasOne("SharedBook.Data.Models.User", "Owner")
                         .WithMany("OwnedBooks")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Location");
 
                     b.Navigation("Owner");
                 });
@@ -517,22 +542,33 @@ namespace SharedBook.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SharedBook.Data.Models.Request", b =>
+            modelBuilder.Entity("SharedBook.Data.Models.City", b =>
+                {
+                    b.HasOne("SharedBook.Data.Models.Area", "Area")
+                        .WithMany("Cities")
+                        .HasForeignKey("AreaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Area");
+                });
+
+            modelBuilder.Entity("SharedBook.Data.Models.Reservation", b =>
                 {
                     b.HasOne("SharedBook.Data.Models.Book", "Book")
-                        .WithMany("Requests")
+                        .WithMany("Reservations")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("SharedBook.Data.Models.User", "Receiver")
-                        .WithMany("ReceivedRequests")
+                        .WithMany("ReceivedReservationRequests")
                         .HasForeignKey("ReceiverId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("SharedBook.Data.Models.User", "Sender")
-                        .WithMany("SentRequests")
+                        .WithMany("SentReservationRequests")
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -544,50 +580,27 @@ namespace SharedBook.Data.Migrations
                     b.Navigation("Sender");
                 });
 
-            modelBuilder.Entity("SharedBook.Data.Models.Reservation", b =>
-                {
-                    b.HasOne("SharedBook.Data.Models.Book", "Book")
-                        .WithMany("Reservations")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("SharedBook.Data.Models.User", "User")
-                        .WithMany("Reservations")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("SharedBook.Data.Models.User", b =>
                 {
-                    b.HasOne("SharedBook.Data.Models.Location", "Location")
-                        .WithMany("Users")
-                        .HasForeignKey("LocationId")
+                    b.HasOne("SharedBook.Data.Models.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Location");
+                    b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("SharedBook.Data.Models.Area", b =>
+                {
+                    b.Navigation("Cities");
                 });
 
             modelBuilder.Entity("SharedBook.Data.Models.Book", b =>
                 {
-                    b.Navigation("Requests");
-
                     b.Navigation("Reservations");
 
                     b.Navigation("Shares");
-                });
-
-            modelBuilder.Entity("SharedBook.Data.Models.Location", b =>
-                {
-                    b.Navigation("Books");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("SharedBook.Data.Models.User", b =>
@@ -596,11 +609,9 @@ namespace SharedBook.Data.Migrations
 
                     b.Navigation("OwnedBooks");
 
-                    b.Navigation("ReceivedRequests");
+                    b.Navigation("ReceivedReservationRequests");
 
-                    b.Navigation("Reservations");
-
-                    b.Navigation("SentRequests");
+                    b.Navigation("SentReservationRequests");
                 });
 #pragma warning restore 612, 618
         }

@@ -18,7 +18,7 @@
         public DateTime? ReturnDate { get; set; }
 
         [Required] 
-        public string BookId { get; set; }
+        public int BookId { get; set; }
 
         public Book Book { get; set; }
 

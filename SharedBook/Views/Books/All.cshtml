@@ -1,0 +1,15 @@
+﻿@model IEnumerable<AllBooksViewModel>
+
+<div class="row">
+    @foreach (var book in Model)
+    {
+        <div class="card">
+            <img src="@book.ImageUrl" class="card-img-top" alt="@book.Title, @book.Author - @book.Owner">
+            <div class="card-body">
+                <h5 class="card-title">@book.Title, @book.Author - @book.Owner</h5>
+                <p class="card-text">Sharing status: @book.Status</p>
+                <a href="#" class="btn btn-primary">Details</a>
+            </div>
+        </div>
+    }
+</div>

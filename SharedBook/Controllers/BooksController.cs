@@ -8,6 +8,7 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Models.Books;
+    using City = Data.Models.Enums.City;
 
     public class BooksController : Controller
     {
@@ -20,35 +21,62 @@
             //Locations = this.GetLocations()
         });
 
+        public IActionResult All()
+        {
+            var books = this.data
+                .Books
+                .OrderByDescending(b => b.Id)
+                .Select(b => new AllBooksViewModel
+                {
+                    Title = b.Title,
+                    Author = b.Author,
+                    Genre = b.Genre,
+                    Description = b.Description,
+                    ImageUrl = b.ImageUrl,
+                    Location = b.Location,
+                    Owner = b.Owner.FirstName + " " + b.Owner.LastName,
+                    Status = b.Status.ToString()
+                })
+                .ToList();
+
+            return View(books);
+        }
+
         [HttpPost]
         public IActionResult Add(AddBookFormModel book, IFormFile image)
         {
-            if (image != null && image.Length > 2 * 1024 * 1024)
+            byte[] imageBytes = null;
+
+            if (image != null)
             {
-                this.ModelState.AddModelError("Image", "The image maximum size should be 2 MB");
+                if (image.Length > 2 * 1024 * 1024)
+                {
+                    this.ModelState.AddModelError("Image", "Upload an image with maximum size 2 MB");
+                }
+                else
+                {
+                    var imageInMemory = new MemoryStream();
+                    image.CopyTo(imageInMemory);
+                    imageBytes = imageInMemory.ToArray();
+                }
             }
-
-            var imageInMemory = new MemoryStream();
-            image.CopyTo(imageInMemory);
-            var imageBytes = imageInMemory.ToArray();
-
+            
             if (!ModelState.IsValid)
             {
                 return View(book);
             }
 
             var userId = "ooo01";
-            var currentUser = data.Users.Select(u => u.Id == userId);
 
             var bookData = new Book
             {
                 Title = book.Title,
                 Author = book.Author,
                 Genre = book.Genre,
-                ImageUrl = book.ImageUrl,
+                ImageUrl = book.ImageUrl ?? imageBytes?.ToString(),
                 Description = book.Description,
-                Status = BookStatus.Available,
                 OwnerId = userId,
+                Status = BookStatus.Available,
                 Location = this.data.Users.Where(u=> u.Id == userId).Select(c => c.Address.City).ToString()
             };
 
