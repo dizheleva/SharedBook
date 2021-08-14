@@ -20,7 +20,8 @@
         public string Author { get; set; }
 
         [Required]
-        public Genre Genre { get; set; }
+        [EnumDataType(typeof(Genre))]
+        public Genre? Genre { get; set; }
 
         [MaxLength(DescriptionMaxLength)]
         public string Description { get; set; }
@@ -28,7 +29,8 @@
         public string ImageUrl { get; set; }
 
         [Required]
-        public BookStatus Status { get; set; }
+        [EnumDataType(typeof(BookStatus))]
+        public BookStatus? Status { get; set; }
 
         [Required]
         public string Location { get; set; }

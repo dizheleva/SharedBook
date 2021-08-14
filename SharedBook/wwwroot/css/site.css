@@ -81,3 +81,8 @@ body {
     height: auto;
     max-height: 50%;
 }
+
+.jumbotron-line {
+    padding-top: 10px;;
+    padding-bottom: 10px;
+}

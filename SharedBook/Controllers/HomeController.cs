@@ -5,7 +5,7 @@
     using Data;
     using Microsoft.AspNetCore.Mvc;
     using Models;
-    using Models.Books;
+    using Models.Home;
 
     public class HomeController : Controller
     {
@@ -14,24 +14,31 @@
         public HomeController(SharedBookDbContext data) => this.data = data;
         public IActionResult Index()
         {
+            var totalBooks = this.data.Books.Count();
+
             var books = this.data
                 .Books
                 .OrderByDescending(b => b.Id)
-                .Select(b => new AllBooksViewModel
+                .Select(b => new BookIndexViewModel
                 {
+                    Id = b.Id,
                     Title = b.Title,
                     Author = b.Author,
-                    Genre = b.Genre,
-                    Description = b.Description,
+                    //Genre = b.Genre,
+                    //Description = b.Description,
                     ImageUrl = b.ImageUrl,
-                    Location = b.Location,
-                    Owner = b.Owner.FirstName + " " + b.Owner.LastName,
-                    Status = b.Status.ToString()
+                    //Location = b.Location,
+                    //Owner = b.Owner.FirstName + " " + b.Owner.LastName,
+                    //Status = b.Status.ToString()
                 })
                 .Take(5)
                 .ToList();
 
-            return View(books);
+            return View(new IndexViewModel
+            {
+                TotalBooks = totalBooks,
+                Books = books
+            });
         }
 
         public IActionResult About() => View();

@@ -1,30 +1,34 @@
 ﻿namespace SharedBook.Models.Books
 {
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using Data.Models.Enums;
 
     public class AllBooksViewModel
     {
-        [Required]
-        public int Id { get; init; }
+        [Display(Name = "Search")]
+        public string SearchTerm { get; init; }
 
-        [Required]
-        public string Title { get; init; }
+        public IEnumerable<string> Titles { get; init; }
 
-        [Required]
-        public string Author { get; init; }
+        public IEnumerable<string> Authors { get; init; }
 
-        public Genre Genre { get; init; }
+        public Genre? Genre { get; init; }
 
-        public string Description { get; init; }
+        public IEnumerable<Genre?> Genres { get; init; }
 
-        [Display(Name = "Image URL")]
-        public string ImageUrl { get; init; }
+        public City? Location { get; init; }
 
-        public string Location { get; set; }
+        public IEnumerable<City?> Locations { get; init; }
 
-        public string Owner { get; set; }
+        public IEnumerable<string> Owners { get; init; }
 
-        public string Status { get; set; }
+        public BookStatus? Status { get; init; }
+
+        public IEnumerable<BookStatus?> Statuses { get; init; }
+
+        public BookSorting Sorting { get; init; }
+
+        public IEnumerable<BookViewModel> Books { get; init; } = new List<BookViewModel>();
     }
 }

@@ -1,21 +1,74 @@
-﻿@model IEnumerable<AllBooksViewModel>
+﻿@using SharedBook.Data.Models.Enums
+@model AllBooksViewModel
 @{
     ViewData["Title"] = "Library";
 }
-
-<div class="row">
-    @foreach (var book in Model)
-    {
-        <div class="col-md-4">
-            <div class="card">
-                <img src="@book.ImageUrl" class="card-img-top" alt="@book.Title">
-                <div class="card-body">
-                    <h5 class="card-title text-center">@book.Title</h5>
-                    <p class="card-text text-center">@book.Author</p>
-                    <p class="card-text text-center">Sharing status: @book.Status</p>
-                    <a asp-controller="Books" asp-action="Details" asp-route-id="@book.Id" class="btn btn-primary">Details</a>
+@{
+    var books = !Model.Books.Any() ? null : Model.Books.ToArray();
+}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Filter Search</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li><select asp-for="Genre" class="form-control" asp-items="Html.GetEnumSelectList<Genre>()">
+                    <option selected="selected" value="">Choose genre</option>
+                </select>
+            </li>
+            <li class="nav-item dropdown">
+                <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<BookStatus>()">
+                    <option selected="selected" value="">Choose status</option>
+                </select>
+            </li>
+            <li class="nav-item dropdown">
+                <select asp-for="Location" class="form-control" asp-items="Html.GetEnumSelectList<City>()">
+                    <option selected="selected" value="">Choose city</option>
+                </select>
+            </li>
+        </ul>
+        <form method="get" class="form-inline my-2 my-lg-0">
+            <div class="input-group ">
+                <input asp-for="SearchTerm" class="form-control" type="search" placeholder="Search title, author..." aria-label="Search">
+                <div class="input-group-append">
+                    <button class="btn btn-success" type="submit">Search</button>
                 </div>
             </div>
+        </form>
+    </div>
+</nav>
+
+@*<form method="get">
+        <div class="row">
+            <label asp-for="SearchTerm"></label>
+            <div class="form-group col-md-3">
+
+                <input asp-for="SearchTerm" method="get" class="form-control" name="searchText" aria-describedby="search" placeholder="Search by book title or author name" type="search">
+            </div>
+
+            <div class="col-md-1">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </div>
         </div>
+    </form>*@
+<div class="row">
+    @if (books != null)
+    {
+        @foreach (var book in books)
+        {
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="@book.ImageUrl" class="card-img-top" alt="@book.Title">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">@book.Title</h5>
+                        <p class="card-text text-center">@book.Author</p>
+                        <p class="card-text text-center">Sharing status: @book.Status</p>
+                        <a asp-controller="Books" asp-action="Details" asp-route-id="@book.Id" class="btn btn-primary">Details</a>
+                    </div>
+                </div>
+            </div>
+        }
     }
 </div>
