@@ -15,50 +15,52 @@
 
         public BooksController(SharedBookDbContext data) => this.data = data;
 
-        public IActionResult Add() => View(new AddBookFormModel
-        {
-            //Locations = this.GetLocations()
-        });
-
-        public IActionResult All(Genre? genre, BookStatus? status, Data.Models.Enums.City? city, string searchTerm)
+        public IActionResult All([FromQuery]AllBooksViewModel query)
         {
             var booksQuery = this.data.Books.AsQueryable();
             
-            var location = city.ToString();
+            var location = query.Location.ToString();
 
-            if (genre != null)
+            if (query.Genre != null)
             {
                 booksQuery = booksQuery.Where(b =>
-                    b.Genre.ToString().ToLower().Contains(searchTerm.ToLower()));
+                    b.Genre.ToString().ToLower().Contains(query.SearchTerm.ToLower()));
             }
 
-            if (status != null)
+            if (query.Status != null)
             {
                 booksQuery = booksQuery.Where(b =>
-                    b.Status.ToString().ToLower().Contains(searchTerm.ToLower()));
+                    b.Status.ToString().ToLower().Contains(query.SearchTerm.ToLower()));
             }
 
             if (!string.IsNullOrWhiteSpace(location))
             {
                 booksQuery = booksQuery.Where(b =>
-                    b.Location.ToLower().Contains(searchTerm.ToLower()));
+                    b.Location.ToLower().Contains(query.SearchTerm.ToLower()));
             }
 
-            if (!string.IsNullOrWhiteSpace(searchTerm))
+            if (!string.IsNullOrWhiteSpace(query.SearchTerm))
             {
                 booksQuery = booksQuery.Where(b =>
-                    b.Title.ToLower().Contains(searchTerm.ToLower())
-                    || b.Author.ToLower().Contains(searchTerm.ToLower())
-                    || b.Genre.ToString().ToLower().Contains(searchTerm.ToLower())
-                    || b.Location.ToLower().Contains(searchTerm.ToLower())
-                    || b.Owner.FirstName.ToLower().Contains(searchTerm.ToLower())
-                    || b.Status.ToString().ToLower().Contains(searchTerm.ToLower())
+                    b.Title.ToLower().Contains(query.SearchTerm.ToLower())
+                    || b.Author.ToLower().Contains(query.SearchTerm.ToLower())
+                    || b.Genre.ToString().ToLower().Contains(query.SearchTerm.ToLower())
+                    || b.Location.ToLower().Contains(query.SearchTerm.ToLower())
+                    || b.Owner.FirstName.ToLower().Contains(query.SearchTerm.ToLower())
+                    || b.Status.ToString().ToLower().Contains(query.SearchTerm.ToLower())
                 );
             }
 
-            var books = this.data
-                .Books
-                .OrderByDescending(b => b.Id)
+            booksQuery = query.Sorting switch
+            {
+                BookSorting.Location => booksQuery.OrderBy(b => b.Location),
+                BookSorting.Status => booksQuery.OrderBy(b => b.Status),
+                BookSorting.Owner => booksQuery.OrderBy(b => b.Owner),
+                BookSorting.Genre => booksQuery.OrderBy(b => b.Genre),
+                _ => booksQuery.OrderByDescending(b => b.Id)
+            };
+
+            var books = booksQuery
                 .Select(b => new BookViewModel
                 {
                     Title = b.Title,
@@ -72,12 +74,16 @@
                 })
                 .ToList();
 
-            return View(new  AllBooksViewModel
-            {
-                Books = books,
-                SearchTerm = searchTerm
-            });
+            query.Books = books;
+
+            return View(query);
         }
+
+        public IActionResult Add() => View(new AddBookFormModel
+        {
+            //Locations = this.GetLocations()
+        });
+
 
         [HttpPost]
         public IActionResult Add(AddBookFormModel book, IFormFile image)
