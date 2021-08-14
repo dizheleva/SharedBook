@@ -11,7 +11,7 @@
 
         public Genre? Genre { get; init; }
 
-        public string Location { get; init; }
+        public City? Location { get; init; }
         
         public BookStatus? Status { get; init; }
 
