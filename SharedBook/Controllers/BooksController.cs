@@ -8,7 +8,6 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Models.Books;
-    using City = Data.Models.Enums.City;
 
     public class BooksController : Controller
     {
@@ -83,7 +82,7 @@
             this.data.Books.Add(bookData);
             this.data.SaveChanges();
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(nameof(All));
         }
 
         // private IEnumerable<BookLocationViewModel> GetLocations() =>

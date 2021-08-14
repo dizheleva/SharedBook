@@ -74,3 +74,10 @@ body {
     margin-top: 20px;
     margin-bottom: 40px;
 }
+
+.responsive {
+    width: auto;
+    max-width: 50%;
+    height: auto;
+    max-height: 50%;
+}

@@ -6,6 +6,9 @@
     public class AllBooksViewModel
     {
         [Required]
+        public int Id { get; init; }
+
+        [Required]
         public string Title { get; init; }
 
         [Required]
