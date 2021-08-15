@@ -2,7 +2,7 @@
 {
     public enum BookSorting
     {
-        Genre,
+        Genre = 1,
         Status,
         Location,
         Owner

@@ -61,6 +61,8 @@
             };
 
             var books = booksQuery
+                .Skip((query.CurrentPage - 1) * AllBooksViewModel.BooksPerPage)
+                .Take(AllBooksViewModel.BooksPerPage)
                 .Select(b => new BookViewModel
                 {
                     Title = b.Title,
@@ -74,6 +76,7 @@
                 })
                 .ToList();
 
+            query.TotalBooks = books.Count;
             query.Books = books;
 
             return View(query);
