@@ -8,76 +8,32 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Models.Books;
+    using Services.Books;
 
     public class BooksController : Controller
     {
+        private readonly IBookService books;
         private readonly SharedBookDbContext data;
 
-        public BooksController(SharedBookDbContext data) => this.data = data;
-
-        public IActionResult All([FromQuery]AllBooksViewModel query)
+        public BooksController(IBookService books, SharedBookDbContext data)
         {
-            var booksQuery = this.data.Books.AsQueryable();
+            this.books = books;
+            this.data = data;
+        }
+
+        public IActionResult All([FromQuery]AllBooksQueryModel query)
+        {
+            var queryResult = this.books.All(
+                query.Location.ToString(),
+                query.Genre.ToString(),
+                query.SearchTerm,
+                query.Status.ToString(),
+                query.Sorting,
+                query.CurrentPage,
+                AllBooksQueryModel.BooksPerPage);
             
-            var location = query.Location.ToString();
-
-            if (query.Genre != null)
-            {
-                booksQuery = booksQuery.Where(b =>
-                    b.Genre.ToString().ToLower().Contains(query.SearchTerm.ToLower()));
-            }
-
-            if (query.Status != null)
-            {
-                booksQuery = booksQuery.Where(b =>
-                    b.Status.ToString().ToLower().Contains(query.SearchTerm.ToLower()));
-            }
-
-            if (!string.IsNullOrWhiteSpace(location))
-            {
-                booksQuery = booksQuery.Where(b =>
-                    b.Location.ToLower().Contains(query.SearchTerm.ToLower()));
-            }
-
-            if (!string.IsNullOrWhiteSpace(query.SearchTerm))
-            {
-                booksQuery = booksQuery.Where(b =>
-                    b.Title.ToLower().Contains(query.SearchTerm.ToLower())
-                    || b.Author.ToLower().Contains(query.SearchTerm.ToLower())
-                    || b.Genre.ToString().ToLower().Contains(query.SearchTerm.ToLower())
-                    || b.Location.ToLower().Contains(query.SearchTerm.ToLower())
-                    || b.Owner.FirstName.ToLower().Contains(query.SearchTerm.ToLower())
-                    || b.Status.ToString().ToLower().Contains(query.SearchTerm.ToLower())
-                );
-            }
-
-            booksQuery = query.Sorting switch
-            {
-                BookSorting.Location => booksQuery.OrderBy(b => b.Location),
-                BookSorting.Status => booksQuery.OrderBy(b => b.Status),
-                BookSorting.Owner => booksQuery.OrderBy(b => b.Owner),
-                BookSorting.Genre => booksQuery.OrderBy(b => b.Genre),
-                _ => booksQuery.OrderByDescending(b => b.Id)
-            };
-
-            var books = booksQuery
-                .Skip((query.CurrentPage - 1) * AllBooksViewModel.BooksPerPage)
-                .Take(AllBooksViewModel.BooksPerPage)
-                .Select(b => new BookViewModel
-                {
-                    Title = b.Title,
-                    Author = b.Author,
-                    Genre = b.Genre,
-                    Description = b.Description,
-                    ImageUrl = b.ImageUrl,
-                    Location = b.Location,
-                    Owner = b.Owner.FirstName + " " + b.Owner.LastName,
-                    Status = b.Status
-                })
-                .ToList();
-
-            query.TotalBooks = books.Count;
-            query.Books = books;
+            query.TotalBooks = queryResult.TotalBooks;
+            query.Books = queryResult.Books;
 
             return View(query);
         }

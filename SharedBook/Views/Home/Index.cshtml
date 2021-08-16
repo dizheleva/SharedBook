@@ -7,12 +7,30 @@
 }
 
 <div class="jumbotron jumbotron-line">
-    <div class="row">
-        <h4 class="col-md-4 text-center">Users: @Model.TotalUsers</h4>
-        <h4 class="col-md-4 text-center">Books: @Model.TotalBooks</h4>
-        <h4 class="col-md-4 text-center">Shares: @Model.TotalShares</h4>
+    <button class="btn btn-primary btn-light" id="statistics-button">Show Statistics</button>
+    <div class="row" style="display: block" id="statistics">
+        <h4 class="col-md-4" id="total-users"></h4>
+        <h4 class="col-md-4" id="total-books"></h4>
+        <h4 class="col-md-4" id="total-shares"></h4>
     </div>
 </div>
+
+
+@section Scripts{
+    <script>
+        $('#statistics-button').on('click', ev => {
+            $.get('/api/statistics', (data) => {
+                $('#total-books').text(data.totalBooks + " Books");
+                $('#total-users').text(data.totalUsers + " Users");
+                $('#total-shares').text(data.totalShares + " Shares");
+
+                $('#statistics').Attr("style", "display: none");
+                $('#statistics-button').hide();
+            });
+        });
+    </script>
+}
+
 <div class="jumbotron" style="background-image: url(http://www.inquiriesjournal.com/imgs/640x320/crop/article-images/uid-5710-1610128097/08c5c6.jpg); background-size: cover;">
     <div class="jumbotron col-md-6">
         <h1 class="display-4">Share your books!</h1>

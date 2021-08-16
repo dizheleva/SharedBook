@@ -9,6 +9,8 @@ namespace SharedBook
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Services.Books;
+    using Services.Statistics;
 
     public class Startup
     {
@@ -36,6 +38,9 @@ namespace SharedBook
                 .AddEntityFrameworkStores<SharedBookDbContext>();
 
             services.AddControllersWithViews();
+
+            services.AddTransient<IStatisticsService, StatisticsService>();
+            services.AddTransient<IBookService, BookService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
