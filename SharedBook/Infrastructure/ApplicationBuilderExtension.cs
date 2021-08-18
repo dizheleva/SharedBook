@@ -1,13 +1,15 @@
 ﻿namespace SharedBook.Infrastructure
 {
-    using System.IO;
-    using System.Linq;
+    using System;
+    using System.Threading.Tasks;
     using Data;
+    using Data.Models;
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
-    using Newtonsoft.Json;
-    using SharedBook.Data.Models;
+
+    using static Areas.Admin.AdminConstants;
 
     public static class ApplicationBuilderExtensions
     {
@@ -15,32 +17,54 @@
         {
             using var scopedServices = app.ApplicationServices.CreateScope();
 
-            var data = scopedServices.ServiceProvider.GetService<SharedBookDbContext>();
+            var services = scopedServices.ServiceProvider;
 
-            data.Database.Migrate();
-
-            //SeedLocations(data);
+            MigrateDatabase(services);
+            
+            SeedAdministrator(services);
 
             return app;
         }
 
-        /*private static void SeedLocations(SharedBookDbContext data)
+        private static void MigrateDatabase(IServiceProvider services)
         {
-            if (data.Books.Any())
-            {
-                return;
-            }
-            
-            var citiesJson = File.ReadAllText("Infrastructure/bgCities.json");
+            var data = services.GetRequiredService<SharedBookDbContext>();
 
-            var jsonLocations = JsonConvert.DeserializeObject<Address[]>(citiesJson);
+            data.Database.Migrate();
+        }
 
-            foreach (var location in jsonLocations)
-            {
-                data.Locations.Add(location);
-            }
+        private static void SeedAdministrator(IServiceProvider services)
+        {
+            var userManager = services.GetRequiredService<UserManager<User>>();
+            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-            data.SaveChanges();
-        }*/
+            Task
+                .Run(async () =>
+                {
+                    if (await roleManager.RoleExistsAsync(AdministratorRoleName))
+                    {
+                        return;
+                    }
+
+                    var role = new IdentityRole { Name = AdministratorRoleName };
+
+                    await roleManager.CreateAsync(role);
+
+                    const string adminEmail = "admin@admin.com";
+                    const string adminPassword = "123456";
+
+                    var user = new User
+                    {
+                        Email = adminEmail,
+                        UserName = adminEmail
+                    };
+
+                    await userManager.CreateAsync(user, adminPassword);
+
+                    await userManager.AddToRoleAsync(user, role.Name);
+                })
+                .GetAwaiter()
+                .GetResult();
+        }
     }
 }

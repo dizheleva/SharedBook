@@ -2,7 +2,6 @@
 {
     using System;
     using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
 
     public class BookShare
     {
@@ -25,14 +24,12 @@
 
         [Required]
         public string OwnerId { get; set; }
-
-        [ForeignKey("OwnerId")]
+        
         public User Owner { get; set; }
 
         [Required]
         public string BorrowerId { get; set; }
 
-        [ForeignKey("BorrowerId")]
         public User Borrower { get; set; }
     }
 }

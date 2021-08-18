@@ -17,6 +17,11 @@
         public City City { get; set; }
 
         [Required]
-        public Area Area { get; set; }
+        public Area Area { get; set; }/*
+
+        [Required]
+        public string UserId { get; set; }
+
+        public User User { get; set; }*/
     }
 }

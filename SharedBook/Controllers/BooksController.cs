@@ -41,13 +41,11 @@
         [Authorize]
         public IActionResult Add()
         {
-            var userIsBorrower = this.data
-                .BookShares
-                .Any(b => b.BorrowerId == this.User.GetId());
+            var user= this.data.Users.FirstOrDefault(u => u.Id == this.User.GetId());
 
-            if (!userIsBorrower)
+            if (user.UserStatus == UserStatus.Active)
             {
-                return RedirectToAction("Create", "Borrowers");
+                return RedirectToAction("Add");
             }
 
             return View(new AddBookFormModel

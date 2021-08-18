@@ -18,7 +18,7 @@
         [Display(Name = "Image URL")]
         public string ImageUrl { get; init; }
 
-        public string Location { get; set; }
+        public City Location { get; set; }
 
         public string Owner { get; set; }
 

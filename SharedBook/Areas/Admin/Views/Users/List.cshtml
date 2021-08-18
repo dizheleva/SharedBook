@@ -1,0 +1,39 @@
+﻿@model IEnumerable<SharedBook.Areas.Admin.Models.MemberViewModel>
+
+@{ 
+    Layout = "_Layout";
+}
+<a class="btn btn-success mt-5" style="margin: 10px" asp-controller="Users" asp-action="Create">Create new customer</a>
+
+<table class="table table-striped table-hover ">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Borrowed books count</th>
+            <th>Show borrowed books</th>
+            <th>Edit customer</th>
+            <th>Delete customer</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var memberInfo in Model)
+        {
+            <tr>
+                <td>@memberInfo.Member.Id</td>
+                <td>@memberInfo.Member.Email</td>
+                <td>@memberInfo.Member.OwnedBooks.Count</td>
+                @if (memberInfo.Member.OwnedBooks.Count == 0)
+                {
+                    <td><a class="btn btn-default" asp-area="">Show</a></td>
+                }
+                else
+                {
+                    <td><a class="btn btn-info" asp-area="" asp-controller="Books" asp-action="All" asp-route-borrowerId="@memberInfo.Member.Id">Show</a></td>
+                }
+                <td><a class="btn btn-info" asp-area="" asp-controller="Users" asp-action="Update" asp-route-id="@memberInfo.Member.Id">Edit</a></td>
+                <td><a class="btn btn-danger" asp-area="" asp-controller="Users" asp-action="Block" asp-route-id="@memberInfo.Member.Id">Delete</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

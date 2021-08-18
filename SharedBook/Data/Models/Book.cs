@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
     using Enums;
     using static DataConstants;
 
@@ -38,7 +37,6 @@
         [Required]
         public string OwnerId { get; set; }
 
-        [ForeignKey("OwnerId")]
         public User Owner { get; set; }
 
         public ICollection<BookShare> Shares { get; set; } = new List<BookShare>();

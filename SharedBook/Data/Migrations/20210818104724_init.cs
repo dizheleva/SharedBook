@@ -3,7 +3,7 @@
     using System;
     using Microsoft.EntityFrameworkCore.Migrations;
 
-    public partial class NewIdentityUserImplemented : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

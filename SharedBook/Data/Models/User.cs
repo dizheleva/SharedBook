@@ -2,27 +2,26 @@
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
     using Enums;
     using Microsoft.AspNetCore.Identity;
     using static DataConstants;
 
     public class User : IdentityUser
     {
-        [Required]
+        
         [MinLength(UserNamesMinLength)]
         [MaxLength(UserNamesMaxLength)]
         public string FirstName { get; set; }
         
-        [Required]
+       
         [MinLength(UserNamesMinLength)]
         [MaxLength(UserNamesMaxLength)]
         public string LastName { get; set; }
 
-        [Required]
+        
         public int AddressId { get; set; }
 
-        [ForeignKey("AddressId")]
+        
         public Address Address { get; set; }
 
         [Required]

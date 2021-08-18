@@ -72,11 +72,14 @@ namespace SharedBook
                 .UseRouting()
                 .UseAuthentication()
                 .UseAuthorization()
-                .UseEndpoints(endpoints => 
+                .UseEndpoints(endpoints =>
                 {
+                    endpoints.MapControllerRoute(
+                        name: "Areas",
+                        pattern: "/{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
                     endpoints.MapDefaultControllerRoute();
                     endpoints.MapRazorPages();
-
                 });
         }
     }

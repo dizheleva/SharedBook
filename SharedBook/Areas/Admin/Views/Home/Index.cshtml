@@ -1,0 +1,57 @@
+﻿@model SharedBook.Areas.Admin.Models.HomeViewModel
+
+<style>
+    .customHeader {
+        margin-top: 20px;
+        margin-left: 350px;
+        width: 40%;
+        border: #000000;
+        padding: 10px;
+        text-align: center;
+    }
+
+    h1 {
+        color: #000000;
+    }
+</style>
+
+<h1 class="customHeader"> Dashboard </h1>
+
+<div align="center" class="row">
+    <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Number of Members
+            </div>
+            <div class="panel-body">
+                <p style="font-size:200%"> @Model.MembersCount </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div align="center" class="row">
+    <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Number of All Books
+            </div>
+            <div class="panel-body">
+                <p style="font-size:200%"> @Model.BooksCount </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div align="center" class="row">
+    <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Number of Shared Books
+            </div>
+            <div class="panel-body">
+                <p style="font-size:200%"> @Model.SharedBooksCount </p>
+            </div>
+        </div>
+    </div>
+</div>

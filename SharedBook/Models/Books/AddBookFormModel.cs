@@ -3,6 +3,7 @@
     using System.ComponentModel.DataAnnotations;
     using Microsoft.AspNetCore.Mvc.ModelBinding;
     using SharedBook.Data.Models.Enums;
+
     using static Data.DataConstants;
 
     public class AddBookFormModel
@@ -31,10 +32,6 @@
         [BindRequired]
         public City Location { get; set; }
 
-        [Required]
-        public bool IsGift { get; set; }
-
-        [Required]
-        public decimal? Deposit { get; set; }
+        public BookStatus Status { get; set; }
     }
 }

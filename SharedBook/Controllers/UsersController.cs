@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Data.Models;
+    using Data.Models.Enums;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Models.Users;
@@ -34,8 +35,7 @@
             var registeredUser = new User
             {
                 Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName
+                UserStatus = UserStatus.Active
             };
 
             var result = await this.userManager.CreateAsync(registeredUser, user.Password);

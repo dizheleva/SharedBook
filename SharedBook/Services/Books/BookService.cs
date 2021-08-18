@@ -47,6 +47,7 @@
                     || b.Genre.ToString().ToLower().Contains(searchTerm.ToLower())
                     || b.Location.ToString().ToLower().Contains(searchTerm.ToLower())
                     || b.Owner.FirstName.ToLower().Contains(searchTerm.ToLower())
+                    || b.Owner.LastName.ToLower().Contains(searchTerm.ToLower())
                     || b.Status.ToString().ToLower().Contains(searchTerm.ToLower())
                 );
             }
@@ -71,7 +72,7 @@
                     Genre = b.Genre,
                     Description = b.Description,
                     ImageUrl = b.ImageUrl,
-                    Location = b.Location.ToString(),
+                    Location = b.Location,
                     Owner = b.Owner.FirstName + " " + b.Owner.LastName,
                     Status = b.Status
                 })
