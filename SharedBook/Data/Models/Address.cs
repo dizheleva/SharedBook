@@ -17,12 +17,6 @@
         public City City { get; set; }
 
         [Required]
-        public int AreaId { get; set; }
-
         public Area Area { get; set; }
-
-        [Required]
-        [Range(1000, 9999)]
-        public int PostCode { get; init; }
     }
 }

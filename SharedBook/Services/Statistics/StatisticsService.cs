@@ -12,7 +12,7 @@
         {
             var totalBooks = this.data.Books.Count();
             var totalUsers = this.data.Users.Count();
-            var totalShares = this.data.SharedBooks.Count();
+            var totalShares = this.data.BookShares.Count();
 
             return new StatisticsServiceModel
             {

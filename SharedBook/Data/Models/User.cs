@@ -3,46 +3,47 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
     using Enums;
+    using Microsoft.AspNetCore.Identity;
     using static DataConstants;
 
-    public class User
+    public class User : IdentityUser
     {
-        [Key] 
-        public string Id { get; init; } = Guid.NewGuid().ToString();
-
         [Required]
-        [MaxLength(FirstNameMaxLength)]
+        [MinLength(UserNamesMinLength)]
+        [MaxLength(UserNamesMaxLength)]
         public string FirstName { get; set; }
         
         [Required]
-        [MaxLength(LastNameMaxLength)]
+        [MinLength(UserNamesMinLength)]
+        [MaxLength(UserNamesMaxLength)]
         public string LastName { get; set; }
+
+        public DateTime RegisteredAt { get; set; } = DateTime.UtcNow;
 
         [Required]
         public int AddressId { get; set; }
 
+        [ForeignKey("AddressId")]
         public Address Address { get; set; }
-
+        
         [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
+        [MaxLength(PhoneMaxLength)]
         [RegularExpression(@"/08[789]\d{7}/")]
         public string Phone { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        public DateTime? DeletedOn { get; set; }
 
         [Required]
         public UserStatus UserStatus { get; set; }
 
-        //public string ProfilePicture { get; set; }
-
         public ICollection<Book> OwnedBooks { get; set; } = new List<Book>();
 
-        public ICollection<BookSharing> BorrowedBooks { get; set; } = new List<BookSharing>();
-
-        public ICollection<Reservation> SentReservationRequests { get; set; } = new List<Reservation>();
-
         public ICollection<Reservation> ReceivedReservationRequests { get; set; } = new List<Reservation>();
+
+        public ICollection<BookShare> SharedBooks { get; set; } = new List<BookShare>();
     }
 }

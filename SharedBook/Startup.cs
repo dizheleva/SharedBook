@@ -22,8 +22,8 @@ namespace SharedBook
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddDbContext<SharedBookDbContext>(options =>
-                options.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
+                .AddDbContext<SharedBookDbContext>(options => options
+                    .UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -35,6 +35,7 @@ namespace SharedBook
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireUppercase = false;
                 })
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<SharedBookDbContext>();
 
             services.AddControllersWithViews();

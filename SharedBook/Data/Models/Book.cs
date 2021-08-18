@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
     using Enums;
     using static DataConstants;
 
@@ -27,24 +28,27 @@
         public string Description { get; set; }
 
         public string ImageUrl { get; set; }
+        
+        [Required]
+        public City Location { get; set; }
 
         [Required]
         [EnumDataType(typeof(BookStatus))]
-        public BookStatus? Status { get; set; }
+        public BookStatus Status { get; set; }
 
         [Required]
-        public string Location { get; set; }
+        public bool IsGift { get; set; }
+
+        [Required]
+        public decimal? Deposit { get; set; }
 
         [Required]
         public string OwnerId { get; set; }
 
+        [ForeignKey("OwnerId")]
         public User Owner { get; set; }
 
-        public DateTime? DeletedAt { get; set; }
-
-        public bool IsDeleted { get; set; }
-
-        public ICollection<BookSharing> Shares { get; init; } = new List<BookSharing>();
+        public ICollection<BookShare> Shares { get; init; } = new List<BookShare>();
 
         public ICollection<Reservation> Reservations { get; init; } = new List<Reservation>();
     }

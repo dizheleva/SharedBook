@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
     using Enums;
 
     public class Reservation
@@ -15,17 +16,22 @@
         public Book Book { get; set; }
 
         [Required]
+        [ForeignKey("Sender")]
         public string SenderId { get; set; }
 
-        public User Sender { get; set; }
+        public Borrower Sender { get; set; }
 
         [Required]
+        [ForeignKey("Receiver")]
         public string ReceiverId { get; set; }
 
         public User Receiver { get; set; }
 
         [Required]
-        public DateTime ReservationDate { get; set; }
+        public DateTime DateCreated { get; set; } = DateTime.UtcNow;
+
+        [Required]
+        public int? SharingDuration { get; set; }
 
         public ReservationStatus ReservationStatus { get; set; }
     }

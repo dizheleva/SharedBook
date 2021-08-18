@@ -5,6 +5,7 @@
     using Microsoft.EntityFrameworkCore.Metadata;
     using Models;
     using System.Linq;
+    using Microsoft.AspNetCore.Identity;
 
     public class SharedBookDbContext : IdentityDbContext
     {
@@ -13,18 +14,31 @@
         {
         }
 
-        public DbSet<User> Users { get; init; }
+        public DbSet<Address> Addresses { get; set; }
 
         public DbSet<Book> Books { get; init; }
 
-        public DbSet<Address> Locations { get; init; }
-        
-        public DbSet<Reservation> Reservations { get; init; }
+        public DbSet<BookShare> BookShares { get; init; }
 
-        public DbSet<BookSharing> SharedBooks { get; init; }
+        public DbSet<Borrower> Borrowers { get; init; }
+
+        public DbSet<Reservation> Reservations { get; init; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder
+                .Entity<Borrower>()
+                .HasOne<IdentityUser>()
+                .WithOne()
+                .HasForeignKey<Borrower>(u => u.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // builder
+            //     .Entity<Address>()
+            //     .HasOne<IdentityUser>()
+            //     .WithOne()
+            //     .OnDelete(DeleteBehavior.Restrict);
+
             builder
                 .Entity<Book>()
                 .HasOne(o => o.Owner)
@@ -51,6 +65,27 @@
                 .HasOne(s => s.Receiver)
                 .WithMany(r => r.ReceivedReservationRequests)
                 .HasForeignKey(s => s.ReceiverId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+                .Entity<BookShare>()
+                .HasOne(s => s.Book)
+                .WithMany(r => r.Shares)
+                .HasForeignKey(s => s.BookId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+                .Entity<BookShare>()
+                .HasOne(s => s.Borrower)
+                .WithMany(r => r.BorrowedBooks)
+                .HasForeignKey(s => s.BorrowerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+                .Entity<BookShare>()
+                .HasOne(s => s.Owner)
+                .WithMany(r => r.SharedBooks)
+                .HasForeignKey(s => s.OwnerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             foreach (IMutableForeignKey relationship in builder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))

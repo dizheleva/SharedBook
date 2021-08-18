@@ -2,9 +2,12 @@
 {
     using System.IO;
     using System.Linq;
+    using System.Security.Claims;
     using Data;
     using Data.Models;
     using Data.Models.Enums;
+    using Infrastructure;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Models.Books;
@@ -38,48 +41,46 @@
             return View(query);
         }
 
-        public IActionResult Add() => View(new AddBookFormModel
+        [Authorize]
+        public IActionResult Add()
         {
-            //Locations = this.GetLocations()
-        });
+            var userIsBorrower = this.data
+                .Borrowers
+                .Any(b => b.UserId == this.User.GetId());
+
+            if (!userIsBorrower)
+            {
+                return RedirectToAction("Create", "Borrowers");
+            }
+
+            return View(new AddBookFormModel
+            {
+
+            });
+        }
 
 
         [HttpPost]
-        public IActionResult Add(AddBookFormModel book, IFormFile image)
+        [Authorize]
+        public IActionResult Add(AddBookFormModel book)
         {
-            byte[] imageBytes = null;
-
-            if (image != null)
-            {
-                if (image.Length > 2 * 1024 * 1024)
-                {
-                    this.ModelState.AddModelError("Image", "Upload an image with maximum size 2 MB");
-                }
-                else
-                {
-                    var imageInMemory = new MemoryStream();
-                    image.CopyTo(imageInMemory);
-                    imageBytes = imageInMemory.ToArray();
-                }
-            }
-            
             if (!ModelState.IsValid)
             {
                 return View(book);
             }
-
-            var userId = "ooo01";
 
             var bookData = new Book
             {
                 Title = book.Title,
                 Author = book.Author,
                 Genre = book.Genre,
-                ImageUrl = book.ImageUrl ?? imageBytes?.ToString(),
+                ImageUrl = book.ImageUrl,
                 Description = book.Description,
-                OwnerId = userId,
+                OwnerId = this.User.GetId(),
                 Status = BookStatus.Available,
-                Location = this.data.Users.Where(u=> u.Id == userId).Select(c => c.Address.City).ToString()
+                Deposit = book.Deposit,
+                IsGift = book.IsGift,
+                Location = book.Location
             };
 
             this.data.Books.Add(bookData);
@@ -87,15 +88,5 @@
 
             return RedirectToAction(nameof(All));
         }
-
-        // private IEnumerable<BookLocationViewModel> GetLocations() =>
-        //     this.data
-        //         .Locations
-        //         .Select(l => new BookLocationViewModel
-        //         {
-        //             Id = l.Id,
-        //             City = l.City
-        //         })
-        //         .ToList();
     }
 }

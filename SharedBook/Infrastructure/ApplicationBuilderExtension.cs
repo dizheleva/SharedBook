@@ -24,7 +24,7 @@
             return app;
         }
 
-        private static void SeedLocations(SharedBookDbContext data)
+        /*private static void SeedLocations(SharedBookDbContext data)
         {
             if (data.Books.Any())
             {
@@ -41,6 +41,6 @@
             }
 
             data.SaveChanges();
-        }
+        }*/
     }
 }

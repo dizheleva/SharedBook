@@ -26,5 +26,15 @@
         [Required]
         [Url]
         public string ImageUrl { get; init; }
+
+        [Required]
+        [BindRequired]
+        public City Location { get; set; }
+
+        [Required]
+        public bool IsGift { get; set; }
+
+        [Required]
+        public decimal? Deposit { get; set; }
     }
 }

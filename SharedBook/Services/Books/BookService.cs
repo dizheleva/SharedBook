@@ -36,7 +36,7 @@
             if (!string.IsNullOrWhiteSpace(location))
             {
                 booksQuery = booksQuery.Where(b =>
-                    b.Location.ToLower().Contains(searchTerm.ToLower()));
+                    b.Location.ToString().ToLower().Contains(searchTerm.ToLower()));
             }
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
@@ -45,7 +45,7 @@
                     b.Title.ToLower().Contains(searchTerm.ToLower())
                     || b.Author.ToLower().Contains(searchTerm.ToLower())
                     || b.Genre.ToString().ToLower().Contains(searchTerm.ToLower())
-                    || b.Location.ToLower().Contains(searchTerm.ToLower())
+                    || b.Location.ToString().ToLower().Contains(searchTerm.ToLower())
                     || b.Owner.FirstName.ToLower().Contains(searchTerm.ToLower())
                     || b.Status.ToString().ToLower().Contains(searchTerm.ToLower())
                 );
@@ -71,7 +71,7 @@
                     Genre = b.Genre,
                     Description = b.Description,
                     ImageUrl = b.ImageUrl,
-                    Location = b.Location,
+                    Location = b.Location.ToString(),
                     Owner = b.Owner.FirstName + " " + b.Owner.LastName,
                     Status = b.Status
                 })
