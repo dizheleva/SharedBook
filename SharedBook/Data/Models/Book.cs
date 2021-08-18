@@ -1,6 +1,5 @@
 ﻿namespace SharedBook.Data.Models
 {
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
@@ -37,19 +36,13 @@
         public BookStatus Status { get; set; }
 
         [Required]
-        public bool IsGift { get; set; }
-
-        [Required]
-        public decimal? Deposit { get; set; }
-
-        [Required]
         public string OwnerId { get; set; }
 
         [ForeignKey("OwnerId")]
         public User Owner { get; set; }
 
-        public ICollection<BookShare> Shares { get; init; } = new List<BookShare>();
+        public ICollection<BookShare> Shares { get; set; } = new List<BookShare>();
 
-        public ICollection<Reservation> Reservations { get; init; } = new List<Reservation>();
+        public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
     }
 }

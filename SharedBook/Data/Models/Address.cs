@@ -11,7 +11,7 @@
 
         [Required]
         [MaxLength(StreetAddressMaxLength)]
-        public string StreetAddress { get; set; }
+        public string StreetFulAddress { get; set; }
 
         [Required]
         public City City { get; set; }

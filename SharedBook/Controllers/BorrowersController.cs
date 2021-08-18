@@ -17,7 +17,7 @@
             this.data = data;
         }
 
-        [Authorize]
+        /*[Authorize]
         public IActionResult Create()
         {
             return View();
@@ -41,6 +41,6 @@
             this.data.Borrowers.Add(newBorrower);
 
             return RedirectToAction("All", "Books");
-        }
+        }*/
     }
 }

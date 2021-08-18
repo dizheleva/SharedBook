@@ -1,14 +1,11 @@
 ﻿namespace SharedBook.Controllers
 {
-    using System.IO;
     using System.Linq;
-    using System.Security.Claims;
     using Data;
     using Data.Models;
     using Data.Models.Enums;
     using Infrastructure;
     using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Models.Books;
     using Services.Books;
@@ -45,8 +42,8 @@
         public IActionResult Add()
         {
             var userIsBorrower = this.data
-                .Borrowers
-                .Any(b => b.UserId == this.User.GetId());
+                .BookShares
+                .Any(b => b.BorrowerId == this.User.GetId());
 
             if (!userIsBorrower)
             {
@@ -78,8 +75,6 @@
                 Description = book.Description,
                 OwnerId = this.User.GetId(),
                 Status = BookStatus.Available,
-                Deposit = book.Deposit,
-                IsGift = book.IsGift,
                 Location = book.Location
             };
 

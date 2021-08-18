@@ -18,9 +18,6 @@
         [Required]
         public DateTime? ReturnDate { get; set; }
 
-        [Required]
-        public decimal Deposit { get; init; }
-
         [Required] 
         public int BookId { get; set; }
 
@@ -35,6 +32,7 @@
         [Required]
         public string BorrowerId { get; set; }
 
-        public Borrower Borrower { get; set; }
+        [ForeignKey("BorrowerId")]
+        public User Borrower { get; set; }
     }
 }

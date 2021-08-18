@@ -16,15 +16,16 @@
         public Book Book { get; set; }
 
         [Required]
-        [ForeignKey("Sender")]
         public string SenderId { get; set; }
 
-        public Borrower Sender { get; set; }
+        [ForeignKey("SenderId")]
+        public User Sender { get; set; }
 
         [Required]
-        [ForeignKey("Receiver")]
         public string ReceiverId { get; set; }
 
+
+        [ForeignKey("ReceiverId")]
         public User Receiver { get; set; }
 
         [Required]
@@ -33,6 +34,7 @@
         [Required]
         public int? SharingDuration { get; set; }
 
+        [Required]
         public ReservationStatus ReservationStatus { get; set; }
     }
 }
