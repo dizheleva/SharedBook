@@ -32,6 +32,8 @@
         [BindRequired]
         public City Location { get; set; }
 
+        [Required]
+        [BindRequired]
         public BookStatus Status { get; set; }
     }
 }

@@ -36,7 +36,7 @@
                     ImageUrl = b.ImageUrl,
                     //Location = b.Location,
                     //Owner = b.Owner.FirstName + " " + b.Owner.LastName,
-                    //Status = b.Status.ToString()
+                    Status = b.Status.ToString()
                 })
                 .Take(5)
                 .ToList();

@@ -40,19 +40,20 @@
 
             var result = await this.userManager.CreateAsync(registeredUser, user.Password);
 
-            if (!result.Succeeded)
+            if (result.Succeeded)
             {
-                var errors = result.Errors.Select(e => e.Description);
-
-                foreach (var error in errors)
-                {
-                    ModelState.AddModelError(String.Empty, error);
-                }
-
-                return View(user);
+                return RedirectToAction("Index", "Home");
             }
 
-            return RedirectToAction("Index", "Home");
+            var errors = result.Errors.Select(e => e.Description);
+
+            foreach (var error in errors)
+            {
+                ModelState.AddModelError(String.Empty, error);
+            }
+
+            return View(user);
+
         }
     }
 }

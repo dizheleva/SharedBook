@@ -43,15 +43,12 @@
         {
             var user= this.data.Users.FirstOrDefault(u => u.Id == this.User.GetId());
 
-            if (user.UserStatus == UserStatus.Active)
+            if (user.UserStatus != UserStatus.Active)
             {
-                return RedirectToAction("Add");
+                return RedirectToAction(nameof(All), "Books");
             }
 
-            return View(new AddBookFormModel
-            {
-
-            });
+            return View(new AddBookFormModel());
         }
 
 
@@ -72,7 +69,7 @@
                 ImageUrl = book.ImageUrl,
                 Description = book.Description,
                 OwnerId = this.User.GetId(),
-                Status = BookStatus.Available,
+                Status = book.Status,
                 Location = book.Location
             };
 

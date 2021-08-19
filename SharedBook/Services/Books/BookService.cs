@@ -19,6 +19,16 @@
             int booksPerPage
             )
         {
+            if (!this.data.Books.Any())
+            {
+                return new BookQueryServiceModel
+                {
+                    TotalBooks = 0,
+                    CurrentPage = currentPage,
+                    BooksPerPage = booksPerPage
+                };
+            }
+
             var booksQuery = this.data.Books.AsQueryable();
             
             if (genre != null)
