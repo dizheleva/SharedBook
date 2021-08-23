@@ -35,7 +35,7 @@
                     //Description = b.Description,
                     ImageUrl = b.ImageUrl,
                     //Location = b.Location,
-                    //Owner = b.Owner.FirstName + " " + b.Owner.LastName,
+                    //UserId = b.UserId.FirstName + " " + b.UserId.LastName,
                     Status = b.Status.ToString()
                 })
                 .Take(5)
@@ -53,7 +53,7 @@
         public IActionResult About() => View();
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error() 
+        public IActionResult Error()
             => View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }

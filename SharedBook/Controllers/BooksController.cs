@@ -1,33 +1,35 @@
 ﻿namespace SharedBook.Controllers
 {
     using System.Linq;
-    using Data;
-    using Data.Models;
+    using AutoMapper;
     using Data.Models.Enums;
     using Infrastructure;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Models.Books;
     using Services.Books;
+    using Services.Users;
 
     public class BooksController : Controller
     {
         private readonly IBookService books;
-        private readonly SharedBookDbContext data;
+        private readonly IUserService users;
+        private readonly IMapper mapper;
 
-        public BooksController(IBookService books, SharedBookDbContext data)
+        public BooksController(IBookService books, IUserService users, IMapper mapper)
         {
             this.books = books;
-            this.data = data;
+            this.users = users;
+            this.mapper = mapper;
         }
 
         public IActionResult All([FromQuery]AllBooksQueryModel query)
         {
             var queryResult = this.books.All(
-                query.Location.ToString(),
-                query.Genre.ToString(),
+                query.Location,
+                query.Genre,
                 query.SearchTerm,
-                query.Status.ToString(),
+                query.Status,
                 query.Sorting,
                 query.CurrentPage,
                 AllBooksQueryModel.BooksPerPage);
@@ -38,45 +40,131 @@
             return View(query);
         }
 
+        public IActionResult Details(int id, string information)
+        {
+            var book = this.books.Details(id);
+
+            if (information != book.GetInformation())
+            {
+                return BadRequest();
+            }
+
+            return View(book);
+        }
+
         [Authorize]
         public IActionResult Add()
         {
-            var user= this.data.Users.FirstOrDefault(u => u.Id == this.User.GetId());
+            var userId = this.User.GetId();
 
-            if (user.UserStatus != UserStatus.Active)
+            if (!this.users.IsRegisteredUser(userId))
             {
-                return RedirectToAction(nameof(All), "Books");
+                return RedirectToAction(nameof(UsersController.Register), "Users");
             }
 
-            return View(new AddBookFormModel());
+            return View(new BookFormModel());
         }
-
-
+        
         [HttpPost]
         [Authorize]
-        public IActionResult Add(AddBookFormModel book)
+        public IActionResult Add(BookFormModel book)
         {
+            var userId = this.User.GetId();
+
+            if (!this.users.IsActiveUser(userId))
+            {
+                return Unauthorized(); ;
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(book);
             }
 
-            var bookData = new Book
+            var bookId = this.books.Create
+                (
+                book.Title,
+                book.Author,
+                book.Description,
+                book.ImageUrl,
+                book.Location,
+                book.Genre,
+                book.Status,
+                userId);
+            
+            return RedirectToAction(nameof(Details), new { id = bookId});
+        }
+
+        [Authorize]
+        public IActionResult Edit(int bookId)
+        {
+            var userId = this.User.GetId();
+
+            if (!this.users.IsRegisteredUser(userId) && !User.IsAdmin())
             {
-                Title = book.Title,
-                Author = book.Author,
-                Genre = book.Genre,
-                ImageUrl = book.ImageUrl,
-                Description = book.Description,
-                OwnerId = this.User.GetId(),
-                Status = book.Status,
-                Location = book.Location
-            };
+                return RedirectToAction(nameof(UsersController.Register), "Users");
+            }
 
-            this.data.Books.Add(bookData);
-            this.data.SaveChanges();
+            if (!this.books.IsOwnedByUser(bookId, userId) && !User.IsAdmin())
+            {
+                return Unauthorized();
+            }
 
-            return RedirectToAction(nameof(All));
+            var book = this.books.Details(bookId);
+
+            var bookForm = this.mapper.Map<BookFormModel>(book);
+
+            return View(bookForm);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult Edit(int id, BookFormModel book)
+        {
+            var userId = this.User.GetId();
+
+            if (!this.users.IsRegisteredUser(userId) && !User.IsAdmin())
+            {
+                return RedirectToAction(nameof(UsersController.Register), "Users");
+            }
+
+            if (!this.books.IsOwnedByUser(id, userId) && !User.IsAdmin())
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(book);
+            }
+
+            var edited = this.books.Edit(
+                id,
+                book.Title,
+                book.Author,
+                book.Description,
+                book.ImageUrl,
+                book.Location,
+                book.Genre,
+                book.Status,
+                userId);
+
+            if (!edited)
+            {
+                return BadRequest();
+            }
+
+            //TempData[GlobalMessageKey] = $"You car was edited{(this.User.IsAdmin() ? string.Empty : " and is awaiting for approval")}!";
+
+            return RedirectToAction(nameof(Details), new { id});
+        }
+
+        [Authorize]
+        public IActionResult Owned()
+        {
+            var myBooks = this.books.BooksByUser(this.User.GetId());
+
+            return View(myBooks);
         }
     }
 }

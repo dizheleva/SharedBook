@@ -23,9 +23,9 @@
         {
             builder
                 .Entity<Book>()
-                .HasOne(o => o.Owner)
-                .WithMany(b => b.OwnedBooks)
-                .HasForeignKey(o => o.OwnerId)
+                .HasOne(b => b.User)
+                .WithMany(u => u.OwnedBooks)
+                .HasForeignKey(o => o.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder

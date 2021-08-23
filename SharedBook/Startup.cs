@@ -13,6 +13,7 @@ namespace SharedBook
     using Microsoft.Extensions.Hosting;
     using Services.Books;
     using Services.Statistics;
+    using Services.Users;
 
     public class Startup
     {
@@ -40,6 +41,8 @@ namespace SharedBook
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<SharedBookDbContext>();
 
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddControllersWithViews(options =>
             {
                 options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
@@ -47,6 +50,7 @@ namespace SharedBook
 
             services.AddTransient<IStatisticsService, StatisticsService>();
             services.AddTransient<IBookService, BookService>();
+            services.AddTransient<IUserService, UserService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

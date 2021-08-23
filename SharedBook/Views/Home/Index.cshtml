@@ -21,7 +21,7 @@
         $('#statistics-button').on('click', ev => {
             $.get('/api/statistics', (data) => {
                 $('#total-books').text(data.totalBooks + " Books");
-                $('#total-users').text(data.totalUsers + " Users");
+                $('#total-users').text(data.totalUsers + " UserIds");
                 $('#total-shares').text(data.totalShares + " Shares");
 
                 $('#statistics').Attr("style", "display: none");

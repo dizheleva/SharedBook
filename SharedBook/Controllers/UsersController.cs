@@ -42,7 +42,7 @@
 
             if (result.Succeeded)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(BooksController.All), "Books");
             }
 
             var errors = result.Errors.Select(e => e.Description);

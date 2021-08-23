@@ -11,11 +11,11 @@
         
         public string SearchTerm { get; init; }
 
-        public Genre? Genre { get; init; }
+        public Genre Genre { get; init; }
 
-        public City? Location { get; init; }
+        public City Location { get; init; }
 
-        public BookStatus? Status { get; init; }
+        public BookStatus Status { get; init; }
 
         public BookSorting Sorting { get; init; }
     }

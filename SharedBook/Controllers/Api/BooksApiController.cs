@@ -15,10 +15,10 @@
         [HttpGet]
         public BookQueryServiceModel GetAllBooks([FromQuery] AllBooksApiRequestModel query) 
             => this.books.All(
-                query.Location.ToString(),
-                query.Genre.ToString(),
+                query.Location,
+                query.Genre,
                 query.SearchTerm, 
-                query.Status.ToString(), 
+                query.Status, 
                 query.Sorting,
                 query.CurrentPage,
                 query.BooksPerPage);

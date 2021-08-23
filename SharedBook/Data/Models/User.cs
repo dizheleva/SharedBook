@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
     using Enums;
     using Microsoft.AspNetCore.Identity;
     using static DataConstants;
@@ -21,7 +22,7 @@
         
         public int? AddressId { get; set; }
 
-        
+        [ForeignKey("AddressId")]
         public Address Address { get; set; }
 
         [Required]

@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
     using Enums;
     using static DataConstants;
 
@@ -35,9 +36,10 @@
         public BookStatus Status { get; set; }
 
         [Required]
-        public string OwnerId { get; set; }
+        [ForeignKey(nameof(User))]
+        public string UserId { get; set; }
 
-        public User Owner { get; set; }
+        public User User { get; set; }
 
         public ICollection<BookShare> Shares { get; set; } = new List<BookShare>();
 
