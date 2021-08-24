@@ -1,34 +1,9 @@
-﻿@model IndexViewModel
+﻿@model IEnumerable<BookServiceModel>
 @{
-    ViewData["Title"] = "Welcome!";
+    ViewBag.Title = "Welcome!";
 }
 @{
-    var books = !Model.Books.Any() ? null : Model.Books.Count() >= 5 ? Model.Books.Take(5).ToArray() : Model.Books.Take(Model.Books.Count()).ToArray();
-}
-
-<div class="jumbotron jumbotron-line">
-    <button class="btn btn-primary btn-light" id="statistics-button">Show Statistics</button>
-    <div class="row" style="display: block" id="statistics">
-        <h4 class="col-md-4" id="total-users"></h4>
-        <h4 class="col-md-4" id="total-books"></h4>
-        <h4 class="col-md-4" id="total-shares"></h4>
-    </div>
-</div>
-
-
-@section Scripts{
-    <script>
-        $('#statistics-button').on('click', ev => {
-            $.get('/api/statistics', (data) => {
-                $('#total-books').text(data.totalBooks + " Books");
-                $('#total-users').text(data.totalUsers + " UserIds");
-                $('#total-shares').text(data.totalShares + " Shares");
-
-                $('#statistics').Attr("style", "display: none");
-                $('#statistics-button').hide();
-            });
-        });
-    </script>
+    var books = !Model.Any() ? null : Model.Count() >= 5 ? Model.Take(5).ToArray() : Model.Take(Model.Count()).ToArray();
 }
 
 <div class="jumbotron" style="background-image: url(http://www.inquiriesjournal.com/imgs/640x320/crop/article-images/uid-5710-1610128097/08c5c6.jpg); background-size: cover;">
@@ -36,7 +11,7 @@
         <h1 class="display-4">Share your books!</h1>
         <p class="lead">Borrow shared books, online and free! </p>
         <hr class="my-4">
-        @if (!Model.Books.Any())
+        @if (!Model.Any())
         {
             <p class="lead">Our library is still empty! Join us and share your books!</p>
         }
@@ -45,19 +20,11 @@
     </div>
 </div>
 <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-    <div class="carousel-inner tagline">
+    <div class="carousel-inner">
+
         @if (books != null)
         {
-            foreach (var book in books)
-            {
-                <div class="carousel-item active">
-                    <img src="@book.ImageUrl" class="d-block w-100" alt="@book.Title - @book.Author">
-                </div>
-                <div class="carousel-caption d-none d-md-block">
-                    <h5><a class="btn btn-light" asp-controller="Books" asp-action="Details" asp-route-id="@book.Id">@book.Title</a></h5>
-                    <p>@book.Author</p>
-                </div>
-            }
+            <partial name="_BookPartial" model="@Model"/>
         }
     </div>
     <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">

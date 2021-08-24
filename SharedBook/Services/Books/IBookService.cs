@@ -1,5 +1,6 @@
 ﻿namespace SharedBook.Services.Books
 {
+    using System;
     using System.Collections.Generic;
     using Data.Models.Enums;
     using Models.Books;
@@ -7,13 +8,15 @@
     public interface IBookService
     {
         BookQueryServiceModel All(
-            City location,
-            Genre genre,
-            string searchTerm,
-            BookStatus status,
-            BookSorting sorting,
-            int currentPage,
-            int booksPerPage);
+            City location = 0,
+            Genre genre = 0,
+            string searchTerm = null,
+            BookStatus status = 0,
+            BookSorting sorting = 0,
+            int currentPage = 1,
+            int booksPerPage = Int32.MaxValue);
+
+        IEnumerable<BookServiceModel> Latest();
 
         BookDetailsServiceModel Details(int bookId);
 
@@ -24,9 +27,7 @@
         IEnumerable<BookServiceModel> BooksByUser(string userId);
 
         bool IsOwnedByUser(int bookId, string userId);
-
-        void ChangeVisility(int bookId);
-
+        
         IEnumerable<string> AllTitles();
     }
 }

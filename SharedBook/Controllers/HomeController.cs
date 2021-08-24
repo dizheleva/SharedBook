@@ -1,53 +1,47 @@
 ﻿namespace SharedBook.Controllers
 {
+    using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
-    using Data;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Caching.Memory;
     using Models;
-    using Models.Home;
+    using Services.Books;
     using Services.Statistics;
 
     public class HomeController : Controller
     {
-        private readonly SharedBookDbContext data;
+        private readonly IBookService books;
         private readonly IStatisticsService statistics;
+        private readonly IMemoryCache cache;
 
-        public HomeController(IStatisticsService statistics, SharedBookDbContext data)
+        public HomeController(IBookService books, IStatisticsService statistics, IMemoryCache cache)
         {
+            this.books = books;
             this.statistics = statistics;
-            this.data = data;
+            this.cache = cache;
         }
 
         public IActionResult Index()
         {
-            var totalStatistics = this.statistics.Total();
+            const string latestBooksCacheKey = "LatestBooksCacheKey";
 
-            var books = this.data
-                .Books
-                .OrderByDescending(b => b.Id)
-                .Select(b => new BookIndexViewModel
-                {
-                    Id = b.Id,
-                    Title = b.Title,
-                    Author = b.Author,
-                    //Genre = b.Genre,
-                    //Description = b.Description,
-                    ImageUrl = b.ImageUrl,
-                    //Location = b.Location,
-                    //UserId = b.UserId.FirstName + " " + b.UserId.LastName,
-                    Status = b.Status.ToString()
-                })
-                .Take(5)
-                .ToList();
+            var latestBooks = this.cache.Get<List<BookServiceModel>>(latestBooksCacheKey);
 
-            return View(new IndexViewModel
+            if (latestBooks == null)
             {
-                TotalUsers = totalStatistics.TotalUsers,
-                TotalShares = totalStatistics.TotalShares,
-                TotalBooks = totalStatistics.TotalBooks,
-                Books = books
-            });
+                latestBooks = this.books
+                    .Latest()
+                    .ToList();
+
+                var cacheOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(30));
+
+                this.cache.Set(latestBooksCacheKey, latestBooks, cacheOptions);
+            }
+
+            return View(latestBooks);
         }
 
         public IActionResult About() => View();

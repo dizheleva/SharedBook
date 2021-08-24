@@ -19,7 +19,7 @@
 
             var services = scopedServices.ServiceProvider;
 
-            MigrateDatabase(services);
+            //MigrateDatabase(services);
             
             SeedAdministrator(services);
 
@@ -51,12 +51,13 @@
                     await roleManager.CreateAsync(role);
 
                     const string adminEmail = "admin@admin.com";
+                    const string adminUsername = "Admin";
                     const string adminPassword = "123456";
 
                     var user = new User
                     {
                         Email = adminEmail,
-                        UserName = adminEmail
+                        UserName = adminUsername
                     };
 
                     await userManager.CreateAsync(user, adminPassword);

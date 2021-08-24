@@ -1,17 +1,12 @@
 ﻿namespace SharedBook.Areas.Identity.Pages.Account
 {
     using System.ComponentModel.DataAnnotations;
-    using System.Text;
-    using System.Text.Encodings.Web;
     using System.Threading.Tasks;
-    using SharedBook.Data.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
-    using Microsoft.AspNetCore.WebUtilities;
-
-    using static Data.DataConstants;
+    using SharedBook.Data.Models;
 
     [AllowAnonymous]
     public class RegisterModel : PageModel
@@ -38,6 +33,9 @@
             [EmailAddress]
             public string Email { get; set; }
 
+            [StringLength(20, MinimumLength = 3)]
+            public string Username { get; set; }
+
             [Required]
             [StringLength(20, MinimumLength = 6)]
             [DataType(DataType.Password)]
@@ -62,8 +60,8 @@
             {
                 var user = new User
                 {
-                    UserName = Input.Email,
-                    Email = Input.Email,
+                    UserName = Input.Username ?? Input.Email,
+                    Email = Input.Email
                 };
 
                 var result = await this.userManager.CreateAsync(user, Input.Password);

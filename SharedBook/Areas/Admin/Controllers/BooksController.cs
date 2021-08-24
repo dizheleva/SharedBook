@@ -1,20 +1,19 @@
 ﻿namespace SharedBook.Areas.Admin.Controllers
 {
-    using Data;
     using Microsoft.AspNetCore.Mvc;
     using Services.Books;
 
     public class BooksController : AdminController
     {
         private readonly IBookService books;
-        private readonly SharedBookDbContext data;
+        //private readonly SharedBookDbContext data;
 
-        //public BooksController(IBookService books) => this.books = books;
-        public BooksController(SharedBookDbContext data) => this.data = data;
+        public BooksController(IBookService books) => this.books = books;
+       // public BooksController(SharedBookDbContext data) => this.data = data;
 
-        public IActionResult All()
+        public IActionResult List()
         {
-            var books = this.data.Books;
+            var books = this.books.All().Books;
 
             return View(books);
         }
@@ -23,7 +22,7 @@
         {
             //this.books.ChangeVisility(id);
 
-            return RedirectToAction(nameof(All));
+            return RedirectToAction(nameof(List));
         }
     }
 }

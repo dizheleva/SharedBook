@@ -1,43 +1,26 @@
 ﻿namespace SharedBook.Areas.Admin.Controllers
 {
-    using System.Collections.Generic;
     using System.Linq;
     using Data;
     using Data.Models;
     using Data.Models.Enums;
     using Microsoft.AspNetCore.Mvc;
     using Models;
-    using Services.Books;
 
     public class UsersController : AdminController
     {
-        private readonly IBookService books;
         private readonly SharedBookDbContext data;
 
-        public UsersController(IBookService books, SharedBookDbContext data)
+        public UsersController(SharedBookDbContext data)
         {
-            this.books = books;
             this.data = data;
         }
 
         public IActionResult List()
         {
-            if (!data.Users.Any())
-            {
-                return View("Empty");
-            }
-
-            List<MemberViewModel> usersList = new List<MemberViewModel>();
-
             var users = data.Users;
 
-            foreach (var user in users)
-            {
-                usersList.Add(new MemberViewModel
-                {
-                    Member = user
-                });
-            }
+            var usersList = users.Select(user => new MemberViewModel { Member = user }).ToList();
 
             return View(usersList);
         }
@@ -64,26 +47,6 @@
             }
 
             this.data.Users.Update(user);
-
-            return RedirectToAction("List");
-        }
-
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(User user)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(user);
-            }
-
-            this.data.Users.Add(user);
-            this.data.SaveChanges();
 
             return RedirectToAction("List");
         }

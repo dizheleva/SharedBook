@@ -1,57 +1,21 @@
 ﻿@model SharedBook.Areas.Admin.Models.HomeViewModel
 
-<style>
-    .customHeader {
-        margin-top: 20px;
-        margin-left: 350px;
-        width: 40%;
-        border: #000000;
-        padding: 10px;
-        text-align: center;
-    }
-
-    h1 {
-        color: #000000;
-    }
-</style>
-
 <h1 class=""> Dashboard </h1>
 
-<div align="center" class="row">
-    <div class="col-md-6">
-        <div class="">
-            <div class="">
-                Number of Members
-            </div>
-            <div class="">
-                <p style="font-size:200%"> @Model.MembersCount </p>
-            </div>
-        </div>
+<div class="jumbotron col-md-5">
+    <div class="row" style="display: block" id="statistics">
+        <h4 class="col-md-4" id="total-users"></h4>
+        <h4 class="col-md-4" id="total-books"></h4>
+        <h4 class="col-md-4" id="total-shares"></h4>
     </div>
 </div>
 
-<div align="center" class="row">
-    <div class="col-md-6">
-        <div class="">
-            <div class="">
-                Number of All Books
-            </div>
-            <div class="">
-                <p style="font-size:200%"> @Model.BooksCount </p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div align="center" class="row">
-    <div class="col-md-6">
-        <div class="">
-            <div class="">
-                Number of Shared Books
-            </div>
-            <div class="">
-                <p style="font-size:200%"> @Model.SharedBooksCount </p>
-            </div>
-        </div>
-    </div>
-</div>
+@section Scripts{
+    <script>
+        $.get('/api/statistics', (data) => {
+            $('#total-books').text(data.totalBooks + " Books");
+            $('#total-users').text(data.totalUsers + " Members");
+            $('#total-shares').text(data.totalShares + " Shares");
+        });
+    </script>
+}

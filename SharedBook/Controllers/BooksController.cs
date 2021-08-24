@@ -1,14 +1,14 @@
 ﻿namespace SharedBook.Controllers
 {
-    using System.Linq;
     using AutoMapper;
-    using Data.Models.Enums;
     using Infrastructure;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Models.Books;
     using Services.Books;
     using Services.Users;
+
+    using static WebConstants;
 
     public class BooksController : Controller
     {
@@ -61,7 +61,7 @@
             {
                 return RedirectToAction(nameof(UsersController.Register), "Users");
             }
-
+            
             return View(new BookFormModel());
         }
         
@@ -78,6 +78,8 @@
 
             if (!ModelState.IsValid)
             {
+                this.TempData[GlobalMessageKey] = "Book not added!";
+
                 return View(book);
             }
 
@@ -91,7 +93,10 @@
                 book.Genre,
                 book.Status,
                 userId);
-            
+
+
+            this.TempData[GlobalMessageKey] = $"New book successfully added!{(this.User.IsAdmin() ? string.Empty : " Waiting for approval.")}";
+
             return RedirectToAction(nameof(Details), new { id = bookId});
         }
 
@@ -135,6 +140,8 @@
 
             if (!ModelState.IsValid)
             {
+                TempData[GlobalMessageKey] = "Book not edited!";
+
                 return View(book);
             }
 
@@ -154,7 +161,7 @@
                 return BadRequest();
             }
 
-            //TempData[GlobalMessageKey] = $"You car was edited{(this.User.IsAdmin() ? string.Empty : " and is awaiting for approval")}!";
+            TempData[GlobalMessageKey] = $"Book successfully edited!{(this.User.IsAdmin() ? string.Empty : " Waiting for approval.")}";
 
             return RedirectToAction(nameof(Details), new { id});
         }

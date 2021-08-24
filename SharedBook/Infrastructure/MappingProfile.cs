@@ -13,7 +13,8 @@
             this.CreateMap<Book, BookFormModel>()
                 .ReverseMap();
 
-            //this.CreateMap<Book, LatestBookServiceModel>();
+            this.CreateMap<Book, BookServiceModel>();
+
             this.CreateMap<BookDetailsServiceModel, BookViewModel>();
 
             this.CreateMap<Book, BookServiceModel>().ReverseMap();

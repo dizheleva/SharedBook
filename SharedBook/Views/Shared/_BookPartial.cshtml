@@ -1,15 +1,15 @@
 ﻿@model IEnumerable<BookServiceModel>
 
-<div class="row mb-5">
+<div class="row">
     @foreach (var book in Model)
     {
-        <div class="col-md-4">
-            <div class="card">
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
                 <img src="@book.ImageUrl" class="card-img-top" alt="@book.Title - @book.Author">
                 <div class="card-body">
                     <h5 class="card-title text-center">@book.Title</h5>
-                    <p class="card-text text-center">@book.Author</p>
-                    <p class="card-text text-center">Sharing status: @book.Status</p>
+                    <h6 class="card-text text-center">@book.Author</h6>
+                    <p class="card-text text-center">Status: @book.Status</p>
                     <a asp-controller="Books" asp-action="Details" asp-route-id="@book.Id" class="btn btn-primary">Details</a>
                     @if (ViewBag.AllowBookEdit == true || User.IsAdmin())
                     {

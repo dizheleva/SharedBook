@@ -9,6 +9,8 @@
     using Microsoft.AspNetCore.Mvc;
     using Models.Users;
 
+    using static WebConstants;
+
     public class UsersController : Controller
     {
         private readonly UserManager<User> userManager;
@@ -42,6 +44,8 @@
 
             if (result.Succeeded)
             {
+                this.TempData[GlobalMessageKey] = "Registration successful!";
+
                 return RedirectToAction(nameof(BooksController.All), "Books");
             }
 
@@ -52,8 +56,9 @@
                 ModelState.AddModelError(String.Empty, error);
             }
 
-            return View(user);
+            this.TempData[GlobalMessageKey] = "Registration unsuccessful!";
 
+            return View(user);
         }
     }
 }

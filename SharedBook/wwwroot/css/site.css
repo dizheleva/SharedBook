@@ -84,6 +84,10 @@ body {
 
 .jumbotron-line {
     padding-top: 10px;
-    ;
+    
     padding-bottom: 10px;
+}
+
+.card-columns {
+    column-count: 4;
 }

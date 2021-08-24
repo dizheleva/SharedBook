@@ -105,6 +105,15 @@
             };
         }
 
+        public IEnumerable<BookServiceModel> Latest()
+            => this.data
+                .Books
+                //.Where(c => c.IsPublic)
+                .OrderByDescending(b => b.Id)
+                .ProjectTo<BookServiceModel>(this.mapper)
+                .Take(5)
+                .ToList();
+
         public BookDetailsServiceModel Details(int id)
             => this.data
                 .Books
@@ -168,15 +177,6 @@
             => this.data
                 .Books
                 .Any(b => b.Id == bookId && b.UserId == userId);
-
-        public void ChangeVisility(int bookId)
-        {
-            var book = this.data.Books.Find(bookId);
-
-            //book.IsPublic = !book.IsPublic;
-
-            this.data.SaveChanges();
-        }
 
         public IEnumerable<string> AllTitles()
             => this.data
