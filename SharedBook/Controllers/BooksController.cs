@@ -40,14 +40,9 @@
             return View(query);
         }
 
-        public IActionResult Details(int id, string information)
+        public IActionResult Details(int id)
         {
             var book = this.books.Details(id);
-
-            if (information != book.GetInformation())
-            {
-                return BadRequest();
-            }
 
             return View(book);
         }
@@ -97,7 +92,7 @@
 
             this.TempData[GlobalMessageKey] = $"New book successfully added!{(this.User.IsAdmin() ? string.Empty : " Waiting for approval.")}";
 
-            return RedirectToAction(nameof(Details), new { id = bookId});
+            return RedirectToAction(nameof(Details), bookId);
         }
 
         [Authorize]
@@ -154,7 +149,8 @@
                 book.Location,
                 book.Genre,
                 book.Status,
-                userId);
+                userId,
+                this.User.IsAdmin());
 
             if (!edited)
             {
@@ -163,7 +159,35 @@
 
             TempData[GlobalMessageKey] = $"Book successfully edited!{(this.User.IsAdmin() ? string.Empty : " Waiting for approval.")}";
 
-            return RedirectToAction(nameof(Details), new { id});
+            return RedirectToAction(nameof(Details), id);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult Delete(int bookId)
+        {
+            var userId = this.User.GetId();
+
+            if (!this.users.IsRegisteredUser(userId) && !User.IsAdmin())
+            {
+                return RedirectToAction(nameof(UsersController.Register), "Users");
+            }
+
+            if (!this.books.IsOwnedByUser(bookId, userId) && !User.IsAdmin())
+            {
+                return BadRequest();
+            }
+            
+            var deleted = this.books.Delete(bookId, userId);
+
+            if (!deleted)
+            {
+                return BadRequest();
+            }
+
+            TempData[GlobalMessageKey] = $"Book successfully deleted!";
+
+            return RedirectToAction(nameof(All));
         }
 
         [Authorize]

@@ -10,15 +10,15 @@ using SharedBook.Data;
 namespace SharedBook.Migrations
 {
     [DbContext(typeof(SharedBookDbContext))]
-    [Migration("20210818192046_IdsFixed")]
-    partial class IdsFixed
+    [Migration("20210824180824_IsPublic")]
+    partial class IsPublic
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.6")
+                .HasAnnotation("ProductVersion", "5.0.9")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -201,12 +201,11 @@ namespace SharedBook.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Location")
                         .HasColumnType("int");
-
-                    b.Property<string>("OwnerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -217,11 +216,10 @@ namespace SharedBook.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OwnerId");
 
                     b.HasIndex("UserId");
 
@@ -256,6 +254,9 @@ namespace SharedBook.Migrations
                     b.Property<DateTime?>("ReturnDate")
                         .IsRequired()
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -315,7 +316,7 @@ namespace SharedBook.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<int>("AddressId")
+                    b.Property<int?>("AddressId")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -330,10 +331,6 @@ namespace SharedBook.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FullName")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("LastName")
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
@@ -441,17 +438,13 @@ namespace SharedBook.Migrations
 
             modelBuilder.Entity("SharedBook.Data.Models.Book", b =>
                 {
-                    b.HasOne("SharedBook.Data.Models.User", "Owner")
+                    b.HasOne("SharedBook.Data.Models.User", "User")
                         .WithMany("OwnedBooks")
-                        .HasForeignKey("OwnerId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SharedBook.Data.Models.User", null)
-                        .WithMany("WishList")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Owner");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SharedBook.Data.Models.BookShare", b =>
@@ -512,9 +505,7 @@ namespace SharedBook.Migrations
                 {
                     b.HasOne("SharedBook.Data.Models.Address", "Address")
                         .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AddressId");
 
                     b.Navigation("Address");
                 });
@@ -537,8 +528,6 @@ namespace SharedBook.Migrations
                     b.Navigation("SentReservationRequests");
 
                     b.Navigation("SharedBooks");
-
-                    b.Navigation("WishList");
                 });
 #pragma warning restore 612, 618
         }

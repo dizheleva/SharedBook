@@ -17,7 +17,7 @@
                 oldMaxLength: 30);
 
             migrationBuilder.AlterColumn<string>(
-                name: "FirstName",
+                name: "FullName",
                 table: "AspNetUsers",
                 type: "nvarchar(30)",
                 maxLength: 30,
@@ -42,7 +42,7 @@
                 oldNullable: true);
 
             migrationBuilder.AlterColumn<string>(
-                name: "FirstName",
+                name: "FullName",
                 table: "AspNetUsers",
                 type: "nvarchar(30)",
                 maxLength: 30,

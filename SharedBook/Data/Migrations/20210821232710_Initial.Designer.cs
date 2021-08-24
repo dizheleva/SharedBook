@@ -332,7 +332,7 @@ namespace SharedBook.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("FullName")
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 

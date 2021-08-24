@@ -199,6 +199,9 @@ namespace SharedBook.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Location")
                         .HasColumnType("int");
 
@@ -214,14 +217,9 @@ namespace SharedBook.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("UserId1")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("Books");
                 });
@@ -330,11 +328,7 @@ namespace SharedBook.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FirstName")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("LastName")
+                    b.Property<string>("FullName")
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
@@ -448,10 +442,6 @@ namespace SharedBook.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SharedBook.Data.Models.User", null)
-                        .WithMany("WishList")
-                        .HasForeignKey("UserId1");
-
                     b.Navigation("User");
                 });
 
@@ -536,8 +526,6 @@ namespace SharedBook.Migrations
                     b.Navigation("SentReservationRequests");
 
                     b.Navigation("SharedBooks");
-
-                    b.Navigation("WishList");
                 });
 #pragma warning restore 612, 618
         }

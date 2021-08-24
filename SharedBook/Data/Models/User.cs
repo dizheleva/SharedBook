@@ -12,13 +12,7 @@
         
         [MinLength(UserNamesMinLength)]
         [MaxLength(UserNamesMaxLength)]
-        public string FirstName { get; set; }
-        
-       
-        [MinLength(UserNamesMinLength)]
-        [MaxLength(UserNamesMaxLength)]
-        public string LastName { get; set; }
-
+        public string FullName { get; set; }
         
         public int? AddressId { get; set; }
 
@@ -33,8 +27,6 @@
         public ICollection<Reservation> ReceivedReservationRequests { get; set; } = new List<Reservation>();
 
         public ICollection<BookShare> SharedBooks { get; set; } = new List<BookShare>();
-
-        public ICollection<Book> WishList { get; set; } = new List<Book>();
 
         public ICollection<BookShare> BorrowedBooks { get; set; } = new List<BookShare>();
 

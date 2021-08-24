@@ -1,5 +1,59 @@
 ﻿@model BookDetailsServiceModel
 
-<div class="col-md-6 offset-3">
-    <h2>@Model.Title @Model.Author</h2>
+
+<div class="jumbotron">
+    <div class="row no-gutters">
+        <div class="col-md-4">
+            <img src="@Model.ImageUrl" class="img-fluid">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="bookTitle">Title</label>
+                            <textarea class="form-control" id="bookTitle" rows="2">@Model.Title</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="bookAuthor">Author</label>
+                            <textarea class="form-control" id="bookAuthor" rows="1">@Model.Author</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="bookGenre">Genre</label>
+                            <textarea class="form-control" id="bookGenre" rows="1">@Model.Genre.ToString()</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="status">Status</label>
+                            <textarea class="form-control" id="status" rows="1">@Model.Status.ToString()</textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="description">Description</label>
+                            <textarea class="form-control" id="description" rows="2">@Model.Description</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="bookLocation">Location</label>
+                            <textarea class="form-control" id="bookLocation" rows="1">@Model.Location.ToString()</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="owner">Owner Email</label>
+                            <textarea class="form-control" id="owner" rows="1">@Model.Owner</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="shares">Number of shares</label>
+                            <textarea class="form-control" id="shares" rows="1">@Model.Shares</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row m-3"></div>
+                <div class="row align-content-center">
+                    <div class="col-md-5 align-content-center">
+                        <a href="/Books/AddReservation?bookId=@Model.Id" class="btn btn-lg btn-primary">Request Reservation</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

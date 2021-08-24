@@ -11,9 +11,9 @@
 
     public class BookService : IBookService
     {
-        private readonly SharedBookDbContext data;
 
         private readonly IConfigurationProvider mapper;
+        private readonly SharedBookDbContext data;
 
         public BookService(SharedBookDbContext data, IMapper mapper)
         {
@@ -21,16 +21,17 @@
             this.mapper = mapper.ConfigurationProvider;
         } 
         public BookQueryServiceModel All(
-            City location,
-            Genre genre,
-            string searchTerm,
-            BookStatus status,
-            BookSorting sorting,
-            int currentPage,
-            int booksPerPage
+            City location, 
+            Genre genre, 
+            string searchTerm, 
+            BookStatus status, 
+            BookSorting sorting, 
+            int currentPage, 
+            int booksPerPage,
+            bool publicOnly = true
             )
         {
-            if (!this.data.Books.Any())
+            if (!this.data.Books.Any(b => b.IsPublic || !publicOnly))
             {
                 return new BookQueryServiceModel
                 {
@@ -40,7 +41,7 @@
                 };
             }
 
-            var booksQuery = this.data.Books.AsQueryable();
+            var booksQuery = this.data.Books.Where(b => !publicOnly || b.IsPublic);
             
             if (genre != 0)
             {
@@ -77,24 +78,11 @@
                 _ => booksQuery.OrderByDescending(b => b.Id)
             };
 
-            var totalBooks = this.data.Books.Count();
-            //booksQuery.Count();
+            var totalBooks = booksQuery.Count();
 
-            // var books = GetBooks(booksQuery
-            //     .Skip((currentPage - 1) * booksPerPage)
-            //     .Take(booksPerPage));
-
-            var books = booksQuery
-                .Skip((currentPage - 1) * booksPerPage)
-                .Take(booksPerPage)
-                .Select(b => new BookServiceModel
-                {
-                    Id = b.Id,
-                    Title = b.Title,
-                    Author = b.Author,
-                    ImageUrl = b.ImageUrl,
-                    Status = b.Status
-                }).ToList();
+            var books = GetBooks(booksQuery
+                 .Skip((currentPage - 1) * booksPerPage)
+                 .Take(booksPerPage));
 
             return new BookQueryServiceModel
             {
@@ -104,24 +92,16 @@
                 Books = books
             };
         }
-
-        public IEnumerable<BookServiceModel> Latest()
-            => this.data
-                .Books
-                //.Where(c => c.IsPublic)
-                .OrderByDescending(b => b.Id)
-                .ProjectTo<BookServiceModel>(this.mapper)
-                .Take(5)
-                .ToList();
-
-        public BookDetailsServiceModel Details(int id)
-            => this.data
-                .Books
-                .Where(b => b.Id == id)
-                .ProjectTo<BookDetailsServiceModel>(this.mapper)
-                .FirstOrDefault();
-
-        public int Create(string title, string author, string description, string imageUrl, City location, Genre genre, BookStatus status, string userId)
+        
+        public int Create(
+            string title, 
+            string author, 
+            string description, 
+            string imageUrl, 
+            City location, 
+            Genre genre, 
+            BookStatus status, 
+            string userId)
         {
             var book = new Book
             {
@@ -132,7 +112,8 @@
                 Location = location,
                 Genre = genre,
                 Status = status,
-                UserId = userId
+                UserId = userId,
+                IsPublic = false
             };
 
             this.data.Books.Add(book);
@@ -141,7 +122,17 @@
             return book.Id;
         }
 
-        public bool Edit(int id, string title, string author, string description, string imageUrl, City location, Genre genre, BookStatus status, string userId)
+        public bool Edit(
+            int id, 
+            string title, 
+            string author, 
+            string description,
+            string imageUrl, 
+            City location, 
+            Genre genre, 
+            BookStatus status, 
+            string userId,
+            bool isPublic)
         {
             var book = this.data.Books.Find(id);
 
@@ -157,18 +148,51 @@
             book.Location = location;
             book.Genre = genre;
             book.Status = status;
+            book.IsPublic = isPublic;
 
             this.data.SaveChanges();
 
             return true;
         }
 
-        private IEnumerable<BookServiceModel> GetBooks(IQueryable<Book> bookQuery)
-            => bookQuery
+        public bool Delete(int bookId, string userId)
+        {
+            var book = this.data.Books.Find(bookId);
+
+            if (book == null || book.UserId != userId)
+            {
+                return false;
+            }
+
+            this.data.Books.Remove(book);
+
+            this.data.SaveChanges();
+
+            return true;
+        }
+
+        public BookDetailsServiceModel Details(int id)
+            => this.data
+                .Books
+                .Where(b => b.Id == id)
+                .ProjectTo<BookDetailsServiceModel>(this.mapper)
+                .FirstOrDefault();
+        
+        public IEnumerable<BookServiceModel> Latest()
+            => this.data
+                .Books
+                .Where(c => c.IsPublic)
+                .OrderByDescending(b => b.Id)
                 .ProjectTo<BookServiceModel>(this.mapper)
+                .Take(5)
                 .ToList();
 
-        public IEnumerable<BookServiceModel> BooksByUser(string userId)
+        private IEnumerable<BookDetailsServiceModel> GetBooks(IQueryable<Book> bookQuery)
+            => bookQuery
+                .ProjectTo<BookDetailsServiceModel>(this.mapper)
+                .ToList();
+
+        public IEnumerable<BookDetailsServiceModel> BooksByUser(string userId)
             => GetBooks(this.data
                 .Books
                 .Where(c => c.User.Id == userId));
@@ -185,5 +209,14 @@
                 .Distinct()
                 .OrderBy(t => t)
                 .ToList();
+
+        public void ChangeVisibility(int id)
+        {
+            var book = this.data.Books.Find(id);
+
+            book.IsPublic = !book.IsPublic;
+
+            this.data.SaveChanges();
+        }
     }
 }

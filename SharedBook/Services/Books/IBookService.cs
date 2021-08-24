@@ -14,17 +14,40 @@
             BookStatus status = 0,
             BookSorting sorting = 0,
             int currentPage = 1,
-            int booksPerPage = Int32.MaxValue);
+            int booksPerPage = Int32.MaxValue,
+            bool publicOnly = true);
 
         IEnumerable<BookServiceModel> Latest();
 
         BookDetailsServiceModel Details(int bookId);
 
-        int Create(string title, string author, string description, string imageUrl, City location, Genre genre, BookStatus status, string userId);
+        int Create(
+            string title, 
+            string author, 
+            string description, 
+            string imageUrl, 
+            City location, 
+            Genre genre, 
+            BookStatus status, 
+            string userId);
 
-        bool Edit(int id, string title, string author, string description, string imageUrl, City location, Genre genre, BookStatus status, string userId);
+        bool Edit(
+            int id, 
+            string title, 
+            string author,
+            string description, 
+            string imageUrl, 
+            City location, 
+            Genre genre, 
+            BookStatus status, 
+            string userId,
+            bool isPublic);
 
-        IEnumerable<BookServiceModel> BooksByUser(string userId);
+        bool Delete(int bookId, string userId);
+
+        void ChangeVisibility(int id);
+
+        IEnumerable<BookDetailsServiceModel> BooksByUser(string userId);
 
         bool IsOwnedByUser(int bookId, string userId);
         

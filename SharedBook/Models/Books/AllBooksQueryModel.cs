@@ -24,6 +24,6 @@
 
         public int TotalBooks { get; set; }
 
-        public IEnumerable<BookServiceModel> Books { get; set; } = new List<BookServiceModel>();
+        public IEnumerable<BookDetailsServiceModel> Books { get; set; } = new List<BookDetailsServiceModel>();
     }
 }

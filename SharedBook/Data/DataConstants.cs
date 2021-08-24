@@ -10,8 +10,10 @@
 
         public const int UserNamesMinLength = 1;
         public const int UserNamesMaxLength = 30;
+
         public const int StreetAddressMinLength = 3;
         public const int StreetAddressMaxLength = 50;
+
         public const int PhoneMaxLength = 30;
     }
 }

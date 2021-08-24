@@ -29,6 +29,7 @@
         public string ImageUrl { get; set; }
         
         [Required]
+        [EnumDataType(typeof(City))]
         public City Location { get; set; }
 
         [Required]
@@ -40,6 +41,8 @@
         public string UserId { get; set; }
 
         public User User { get; set; }
+
+        public bool IsPublic { get; set; }
 
         public ICollection<BookShare> Shares { get; set; } = new List<BookShare>();
 
